@@ -4,7 +4,8 @@
       "type": "custom",
       "candid": "canisters/nns_ui/nns_ui.did",
       "wasm": "target/wasm32-unknown-unknown/release/nns_ui-opt.wasm",
-      "build": "./build.sh"
+      "build": "./build.sh",
+      "assets": "dfinity_wallet/build/web"
     },
     "nns_ui_assets": {
       "type": "assets",

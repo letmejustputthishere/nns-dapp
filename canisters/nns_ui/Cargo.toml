@@ -9,6 +9,8 @@ edition = "2018"
 candid = "0.6.20"
 # core_arch = "0.1.5"
 getrandom = { version = "0.2.2", features = ["js"] }
+ic-cdk = "0.2.4"
+ic-cdk-macros = "0.2.4"
 itertools = "0.10.0"
 lazy_static = "1.4.0"
 serde = "1.0.125"

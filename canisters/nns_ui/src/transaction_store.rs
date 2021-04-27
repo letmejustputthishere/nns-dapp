@@ -2,6 +2,7 @@ use candid::CandidType;
 use dfn_candid::Candid;
 use ic_base_types::PrincipalId;
 use itertools::Itertools;
+use lazy_static::lazy_static;
 use ledger_canister::{
     AccountIdentifier,
     BlockHeight,
@@ -16,8 +17,13 @@ use std::collections::{hash_map::Entry::{Occupied, Vacant}, HashMap, VecDeque};
 use std::iter::FromIterator;
 use std::cmp::min;
 use std::ops::RangeTo;
+use std::sync::RwLock;
 
 type TransactionIndex = u64;
+
+lazy_static! {
+    pub static ref STORE: RwLock<TransactionStore> = RwLock::new(TransactionStore::default());
+}
 
 #[derive(Default)]
 pub struct TransactionStore {
@@ -66,19 +72,27 @@ pub struct SubAccountResponse {
     account_identifier: AccountIdentifier
 }
 
+#[derive(CandidType, Deserialize)]
+pub struct TransactionStoreStableState {
+    transactions: Vec<Transaction>,
+    accounts: Vec<Option<Account>>,
+    block_height_synced_up_to: Option<BlockHeight>,
+}
+
 impl TransactionStore {
-    pub fn encode(&self) -> Vec<u8> {
-        Candid((Vec::from_iter(self.transactions.iter()), &self.accounts, &self.block_height_synced_up_to)).into_bytes().unwrap()
+    pub fn drain(self) -> TransactionStoreStableState {
+        TransactionStoreStableState {
+            transactions: Vec::from_iter(self.transactions),
+            accounts: self.accounts,
+            block_height_synced_up_to: self.block_height_synced_up_to
+        }
     }
 
-    pub fn decode(bytes: &[u8]) -> Result<Self, String> {
-        let (transactions, accounts, block_height_synced_up_to): (Vec<Transaction>, Vec<Option<Account>>, Option<BlockHeight>) =
-            Candid::from_bytes(bytes.to_vec()).map(|c| c.0)?;
-
+    pub fn restore(state: TransactionStoreStableState) -> TransactionStore {
         let mut identifier_to_account_index_and_sub_account_map: HashMap<AccountIdentifier, (u32, Option<u8>)> = HashMap::new();
         let mut empty_account_indices: Vec<u32> = Vec::new();
 
-        for i in 0..accounts.len() {
+        for i in 0..state.accounts.len() {
             if let Some(a) = accounts.get(i).unwrap() {
                 let index = i as u32;
                 identifier_to_account_index_and_sub_account_map.insert(a.account_identifier, (index, None));
@@ -90,13 +104,20 @@ impl TransactionStore {
             }
         }
 
-        Ok(TransactionStore {
+        TransactionStore {
             identifier_to_account_index_and_sub_account_map,
             transactions: VecDeque::from_iter(transactions),
             accounts,
             block_height_synced_up_to,
             empty_account_indices
-        })
+        }
+    }
+
+    pub fn decode(bytes: &[u8]) -> Result<Self, String> {
+        let (transactions, accounts, block_height_synced_up_to): (Vec<Transaction>, Vec<Option<Account>>, Option<BlockHeight>) =
+            Candid::from_bytes(bytes.to_vec()).map(|c| c.0)?;
+
+
     }
 
     pub fn check_account_exists(&self, caller: PrincipalId) -> bool {

@@ -2,6 +2,7 @@ use candid::CandidType;
 use crate::assets::asset::{Asset, AssetDetails, AssetEncoding};
 use crate::assets::batch::{Batches, BatchId};
 use crate::assets::chunk::{ChunkId, Chunks};
+use crate::assets::http_request::http_request_impl;
 use dfn_candid::{candid_one, Candid};
 use dfn_core::api::PrincipalId;
 use dfn_core::over;
@@ -10,7 +11,6 @@ use std::cell::RefCell;
 use std::collections::HashMap;
 use std::ops::Deref;
 use on_wire::{IntoWire, FromWire};
-use crate::assets::http_request::http_request_impl;
 use std::borrow::Borrow;
 use itertools::Itertools;
 
@@ -36,33 +36,40 @@ pub fn init() {
     // });
 }
 
-pub fn encode_to_bytes() -> Vec<u8> {
-    AUTHORIZED.with(|authorized| {
-        let authorized = authorized.borrow();
-        ASSETS.with(|assets| {
-            let assets = assets.borrow();
-            BATCHES.with(|batches| {
-                let batches = batches.borrow();
-                CHUNKS.with(|chunks| {
-                    chunks.borrow();
+pub struct AssetsStableState {
+    authorized: Vec<PrincipalId>,
+    assets: HashMap<String, Asset>,
+    batches: Batches,
+    chunks: Chunks,
+}
 
-                    Candid((authorized.deref(), assets.deref(), batches.deref(), chunks.deref())).into_bytes().unwrap()
+pub fn drain() -> AssetsStableState {
+    AUTHORIZED.with(|authorized| {
+        let authorized = authorized.into_inner();
+        ASSETS.with(|assets| {
+            let assets = assets.into_inner();
+            BATCHES.with(|batches| {
+                let batches = batches.into_inner();
+                CHUNKS.with(|chunks| {
+                    let chunks = chunks.into_inner();
+
+                    AssetsStableState {
+                        authorized,
+                        assets,
+                        batches,
+                        chunks,
+                    }
                 })
             })
         })
     })
 }
 
-pub fn fill_from_bytes(bytes: Vec<u8>) -> Result<(), String> {
-    let (authorized, assets, batches, chunks): (Vec<PrincipalId>, HashMap<String, Asset>, Batches, Chunks) =
-        Candid::from_bytes(bytes).map(|c| c.0)?;
-
-    AUTHORIZED.with(|a| a.replace(authorized));
-    ASSETS.with(|a| a.replace(assets));
-    BATCHES.with(|b| b.replace(batches));
-    CHUNKS.with(|c| c.replace(chunks));
-
-    Ok(())
+pub fn restore(data: AssetsStableData) {
+    AUTHORIZED.with(|a| a.replace(data.authorized));
+    ASSETS.with(|a| a.replace(data.assets));
+    BATCHES.with(|b| b.replace(data.batches));
+    CHUNKS.with(|c| c.replace(data.chunks));
 }
 
 #[export_name = "canister_update authorize"]

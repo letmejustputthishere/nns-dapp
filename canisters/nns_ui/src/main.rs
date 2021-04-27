@@ -1,28 +1,43 @@
 use candid::CandidType;
 use crate::state::{STATE, State};
 use crate::transaction_store::{GetTransactionsRequest, GetTransactionsResponse, CreateSubAccountResponse, SubAccountResponse};
-use dfn_candid::{candid, candid_one};
+use dfn_candid::{candid, candid_one, Candid};
 use dfn_core::{stable, over, over_async};
 use ledger_canister::AccountIdentifier;
+use on_wire::{IntoWire, FromWire};
 
+mod assets;
 mod ledger_sync;
 mod state;
 mod transaction_store;
 
 #[export_name = "canister_init"]
-fn main() {}
+fn main() {
+    assets::init();
+}
 
 #[export_name = "canister_post_upgrade"]
 fn post_upgrade() {
-    let bytes = stable::get();
-    *STATE.write().unwrap() = State::decode(&bytes).expect("Decoding stable memory failed");
+    dfn_core::api::print("post_upgrade starting");
+    let all_bytes = stable::get();
+    dfn_core::api::print(format!("post_upgrade: {} bytes", all_bytes.len()));
+    let (state_bytes, assets_bytes): (Vec<u8>, Vec<u8>) = Candid::from_bytes(all_bytes).unwrap().0;
+
+    *STATE.write().unwrap() = State::decode(&state_bytes).expect("Decoding stable memory failed");
+    assets::fill_from_bytes(assets_bytes).unwrap();
+    dfn_core::api::print("post_upgrade finished");
 }
 
 #[export_name = "canister_pre_upgrade"]
 fn pre_upgrade() {
+    dfn_core::api::print("pre_upgrade starting");
     let state = STATE.read().unwrap();
-    let bytes = state.encode();
-    stable::set(&bytes);
+    let state_bytes = state.encode();
+    let assets_bytes = assets::encode_to_bytes();
+    let all_bytes = Candid((state_bytes, assets_bytes)).into_bytes().unwrap();
+    dfn_core::api::print(format!("pre_upgrade: {} bytes", all_bytes.len()));
+    stable::set(&all_bytes);
+    dfn_core::api::print("pre_upgrade finished");
 }
 
 #[export_name = "canister_query get_account"]

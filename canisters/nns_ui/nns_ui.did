@@ -1,6 +1,9 @@
 type AccountIdentifier = text;
+type BatchId = nat;
 type BlockHeight = nat64;
+type ChunkId = nat;
 type ICPTs = record { e8s: nat64; };
+type Key = text;
 type SubAccount = vec nat8;
 
 type GetAccountResponse =
@@ -73,10 +76,130 @@ type CreateSubAccountResponse =
         SubAccountLimitExceeded;
     };
 
+type HttpResponse =
+    record {
+        body: blob;
+        headers: vec HeaderField;
+        status_code: nat16;
+        streaming_strategy: opt StreamingStrategy;
+    };
+
+type HttpRequest =
+    record {
+        body: blob;
+        headers: vec HeaderField;
+        method: text;
+        url: text;
+    };
+
+type HeaderField =
+    record {
+        text;
+        text;
+    };
+
+type AssetDetails =
+    record {
+        content_type: text;
+        encodings: vec AssetEncodingDetails;
+        key: Key;
+    };
+
+type AssetEncodingDetails =
+    record {
+        content_encoding: text;
+        length: nat;
+        sha256: opt blob;
+    };
+
+type StreamingStrategy =
+    variant {
+        Callback:
+            record {
+                callback:
+                    func (StreamingCallbackToken) -> (StreamingCallbackHttpResponse) query;
+                    token: StreamingCallbackToken;
+            };
+    };
+
+type StreamingCallbackToken =
+    record {
+        content_encoding: text;
+        index: nat;
+        key: text;
+        sha256: opt blob;
+    };
+
+type StreamingCallbackHttpResponse =
+    record {
+        body: blob;
+        token: opt StreamingCallbackToken;
+    };
+
+type CommitBatchRequest =
+    record {
+        batch_id: BatchId;
+        operations: vec BatchOperationKind;
+    };
+
+type BatchOperationKind =
+    variant {
+        Clear: ClearArguments;
+        CreateAsset: CreateAssetArguments;
+        DeleteAsset: DeleteAssetArguments;
+        SetAssetContent: SetAssetContentArguments;
+        UnsetAssetContent: UnsetAssetContentArguments;
+    };
+
+type ClearArguments = record {};
+
+type CreateAssetArguments =
+    record {
+        content_type: text;
+        key: Key;
+    };
+
+type DeleteAssetArguments =
+    record {
+        key: Key;
+    };
+
+type SetAssetContentArguments =
+    record {
+        chunk_ids: vec ChunkId;
+        content_encoding: text;
+        key: Key;
+        sha256: opt blob;
+    };
+
+type UnsetAssetContentArguments =
+    record {
+        content_encoding: text;
+        key: Key;
+    };
+
+type CreateChunkRequest =
+    record {
+        batch_id: BatchId;
+        content: blob;
+    };
+
+type CreateChunkResponse =
+    record {
+        chunk_id: ChunkId;
+    };
+
 service : {
     get_account: () -> (GetAccountResponse) query;
     add_account: () -> (AccountIdentifier);
     get_transactions: (GetTransactionsRequest) -> (GetTransactionsResponse) query;
     create_sub_account: (text) -> (CreateSubAccountResponse);
     sync_transactions: () -> ();
+
+    authorize: (principal) -> ();
+    http_request: (HttpRequest) -> (HttpResponse) query;
+    list: (record {}) -> (vec AssetDetails) query;
+    create_batch: (record {}) -> (record {batch_id: BatchId;});
+    create_chunk: (CreateChunkRequest) -> (CreateChunkResponse);
+    commit_batch: (CommitBatchRequest) -> ();
 }

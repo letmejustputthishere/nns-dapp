@@ -6,18 +6,20 @@ edition = "2018"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-candid = "0.6.15"
+candid = "0.6.20"
+# core_arch = "0.1.5"
 getrandom = { version = "0.2.2", features = ["js"] }
 itertools = "0.10.0"
 lazy_static = "1.4.0"
-serde = "1.0"
+serde = "1.0.125"
+serde_bytes = "0.11.5"
 
-dfn_candid = { git = "ssh://github.com/dfinity-lab/dfinity", rev = "d53b551dc677a82c8420a939b5fee2d38f6f1e8b" }
-dfn_core = { git = "ssh://github.com/dfinity-lab/dfinity", rev = "d53b551dc677a82c8420a939b5fee2d38f6f1e8b" }
-dfn_json = { git = "ssh://github.com/dfinity-lab/dfinity", rev = "d53b551dc677a82c8420a939b5fee2d38f6f1e8b" }
-dfn_macro = { git = "ssh://github.com/dfinity-lab/dfinity", rev = "d53b551dc677a82c8420a939b5fee2d38f6f1e8b" }
-dfn_protobuf = { git = "ssh://github.com/dfinity-lab/dfinity", rev = "d53b551dc677a82c8420a939b5fee2d38f6f1e8b" }
-ic-base-types = { git = "ssh://github.com/dfinity-lab/dfinity", rev = "d53b551dc677a82c8420a939b5fee2d38f6f1e8b" }
-ic-nns-constants = { git = "ssh://github.com/dfinity-lab/dfinity", rev = "d53b551dc677a82c8420a939b5fee2d38f6f1e8b" }
-ledger-canister = { git = "ssh://github.com/dfinity-lab/dfinity", rev = "d53b551dc677a82c8420a939b5fee2d38f6f1e8b" }
-on_wire = { git = "ssh://github.com/dfinity-lab/dfinity", rev = "d53b551dc677a82c8420a939b5fee2d38f6f1e8b" }
+dfn_candid = { git = "ssh://github.com/dfinity-lab/dfinity", rev = "89616a9511bc59114780a8520c26500f29d864a1" }
+dfn_core = { git = "ssh://github.com/dfinity-lab/dfinity", rev = "89616a9511bc59114780a8520c26500f29d864a1" }
+dfn_json = { git = "ssh://github.com/dfinity-lab/dfinity", rev = "89616a9511bc59114780a8520c26500f29d864a1" }
+dfn_macro = { git = "ssh://github.com/dfinity-lab/dfinity", rev = "89616a9511bc59114780a8520c26500f29d864a1" }
+dfn_protobuf = { git = "ssh://github.com/dfinity-lab/dfinity", rev = "89616a9511bc59114780a8520c26500f29d864a1" }
+ic-base-types = { git = "ssh://github.com/dfinity-lab/dfinity", rev = "89616a9511bc59114780a8520c26500f29d864a1" }
+ic-nns-constants = { git = "ssh://github.com/dfinity-lab/dfinity", rev = "89616a9511bc59114780a8520c26500f29d864a1" }
+ledger-canister = { git = "ssh://github.com/dfinity-lab/dfinity", rev = "89616a9511bc59114780a8520c26500f29d864a1" }
+on_wire = { git = "ssh://github.com/dfinity-lab/dfinity", rev = "89616a9511bc59114780a8520c26500f29d864a1" }

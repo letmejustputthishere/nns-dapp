@@ -14,6 +14,8 @@ use on_wire::{FromWire, IntoWire};
 use serde::Deserialize;
 use std::collections::{hash_map::Entry::{Occupied, Vacant}, HashMap, VecDeque};
 use std::iter::FromIterator;
+use std::cmp::min;
+use std::ops::RangeTo;
 
 type TransactionIndex = u64;
 
@@ -124,10 +126,10 @@ impl TransactionStore {
 
     pub fn create_sub_account(&mut self, caller: PrincipalId, sub_account_name: String) -> CreateSubAccountResponse {
         if let Some(account) = self.try_get_account_mut(&AccountIdentifier::from(caller.clone())) {
-            if account.sub_accounts.len() == (u8::max_value() as usize) {
+            if account.sub_accounts.len() == (u8::MAX as usize) {
                 CreateSubAccountResponse::SubAccountLimitExceeded
             } else {
-                let sub_account_id = (1..u8::max_value())
+                let sub_account_id = (1..u8::MAX)
                     .filter(|i| !account.sub_accounts.contains_key(i))
                     .next()
                     .unwrap();
@@ -325,6 +327,54 @@ impl TransactionStore {
             None => None
         }
     }
+
+    fn prune_transactions(&mut self, prune_blocks_before_height: BlockHeight) -> u32 {
+        let prune_blocks_before_height = min(prune_blocks_before_height, self.block_height_synced_up_to.unwrap_or(0));
+        let lowest_current_block_height = self.transactions.front().map(|t| t.block_height).unwrap_or(0);
+        let count_to_prune = prune_blocks_before_height - lowest_current_block_height;
+
+        if count_to_prune > 0 {
+            let transactions: Vec<_> = self.transactions
+                .drain(RangeTo { end: count_to_prune as usize })
+                .collect();
+
+            for transaction in transactions {
+                match transaction.transfer {
+                    Burn { from, amount: _ } => self.prune_transactions_from_account(from, prune_blocks_before_height),
+                    Mint { to, amount: _ } => self.prune_transactions_from_account(to, prune_blocks_before_height),
+                    Send { from, to, amount: _, fee: _ } => {
+                        self.prune_transactions_from_account(from, transaction.block_height);
+                        self.prune_transactions_from_account(to, transaction.block_height);
+                    }
+                }
+            }
+        }
+
+        count_to_prune as u32
+    }
+
+    fn prune_transactions_from_account(&mut self, account_identifier: AccountIdentifier, prune_blocks_before_height: BlockHeight) {
+        if let Some((account_index, subaccount)) = self.try_get_account_index_and_sub_account(&account_identifier) {
+            let account: &mut Account = self.accounts.get_mut(account_index as usize).unwrap().as_mut().unwrap();
+            let transactions: &mut Vec<BlockHeight>;
+            if let Some(subaccount) = subaccount {
+                transactions = &mut account.sub_accounts.get_mut(&subaccount).unwrap().transactions;
+            } else {
+                transactions = &mut account.default_account_transactions;
+            }
+
+            let index = transactions
+                .iter()
+                .enumerate()
+                .take_while(|(index, &block_height)| block_height < prune_blocks_before_height)
+                .map(|(index, _)| index)
+                .last();
+
+            if let Some(index) = index {
+                transactions.drain(0..=index);
+            }
+        }
+    }
 }
 
 impl Account {
@@ -421,7 +471,7 @@ mod tests {
     const TEST_ACCOUNT_2: &str = "c2u3y-w273i-ols77-om7wu-jzrdm-gxxz3-b75cc-3ajdg-mauzk-hm5vh-jag";
 
     #[test]
-    fn get_non_existant_account_produces_empty_results() {
+    fn get_non_existent_account_produces_empty_results() {
         let principal = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
         let store = TransactionStore::default();
 
@@ -497,6 +547,22 @@ mod tests {
         assert_eq!("CCC", results[2].name);
     }
 
+    #[test]
+    fn prune_transactions() {
+        let mut store = setup_test_store();
+
+        assert_eq!(2, store.prune_transactions(2));
+        assert_eq!(2, store.transactions.front().unwrap().block_height);
+
+        for account in store.accounts.iter().map(|a| a.as_ref().unwrap()) {
+            assert!(*account.default_account_transactions.iter().next().unwrap() >= 2);
+
+            for subaccount in account.sub_accounts.values() {
+                assert!(*subaccount.transactions.iter().next().unwrap() >= 2);
+            }
+        }
+    }
+
     fn setup_test_store() -> TransactionStore {
         let principal1 = PrincipalId::from_str(TEST_ACCOUNT_1).unwrap();
         let principal2 = PrincipalId::from_str(TEST_ACCOUNT_2).unwrap();
@@ -506,34 +572,33 @@ mod tests {
         store.add_account(principal1);
         store.add_account(principal2);
         let timestamp = TimeStamp {
-            secs: 100,
-            nanos: 100,
+            timestamp_nanos: 100
         };
         {
             let transfer = Mint {
-                amount: ICPTs::from_doms(1_000_000_000),
+                amount: ICPTs::from_e8s(1_000_000_000),
                 to: account_identifier1,
             };
             store.append_transaction(transfer, 0, timestamp).unwrap();
         }
         {
             let transfer = Mint {
-                amount: ICPTs::from_doms(1_000_000_000),
+                amount: ICPTs::from_e8s(1_000_000_000),
                 to: account_identifier1,
             };
             store.append_transaction(transfer, 1, timestamp).unwrap();
         }
         {
             let transfer = Burn {
-                amount: ICPTs::from_doms(500_000_000),
+                amount: ICPTs::from_e8s(500_000_000),
                 from: account_identifier1,
             };
             store.append_transaction(transfer, 2, timestamp).unwrap();
         }
         {
             let transfer = Send {
-                amount: ICPTs::from_doms(300_000_000),
-                fee: ICPTs::from_doms(1_000),
+                amount: ICPTs::from_e8s(300_000_000),
+                fee: ICPTs::from_e8s(1_000),
                 from: account_identifier1,
                 to: account_identifier2,
             };
@@ -541,4 +606,6 @@ mod tests {
         }
         store
     }
+
+
 }

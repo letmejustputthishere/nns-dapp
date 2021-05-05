@@ -25,7 +25,7 @@ import 'package:dfinity_wallet/dfinity.dart';
 import 'stringify.dart';
 
 class PlatformICApi extends AbstractPlatformICApi {
-  final authApi = new AuthApi();
+  AuthApi? authApi;
   ServiceApi? serviceApi;
   AccountsSyncService? accountsSyncService;
   BalanceSyncService? balanceSyncService;
@@ -39,30 +39,40 @@ class PlatformICApi extends AbstractPlatformICApi {
   void authenticate(BuildContext context) async {
     await hiveBoxes.authToken.clear();
 
-    final key = authApi.createKey();
-    await context.boxes.authToken.put(WEB_TOKEN_KEY, AuthToken()..key = key);
-    print("Stored token ${context.boxes.authToken.get(WEB_TOKEN_KEY)?.key}");
-    authApi.loginWithIdentityProvider(
-        key, "http://" + window.location.host + "/index.html");
+    authAndBuildServices();
+    // await context.boxes.authToken.put(WEB_TOKEN_KEY, AuthToken()..key = key);
+    // print("Stored token ${context.boxes.authToken.get(WEB_TOKEN_KEY)?.key}");
+    // authApi!.loginWithIdentityProvider(
+    //     key, "http://" + window.location.host + "/index.html");
+  }
+
+  Future<void> authAndBuildServices() async {
+    if (authApi == null) {
+      authApi = await promiseToFuture(createAuthApi());
+    }
+
+    var identity = authApi!.tryGetIdentity();
+    if (identity == null) {
+      await promiseToFuture(authApi!.login());
+    } else {
+      buildServices(identity);
+    }
   }
 
   final gatewayHost = "https://cdtesting.dfinity.network/";
 
-  Future<void> buildServices() async {
-    final token = hiveBoxes.authToken.webAuthToken;
-    if (token != null && token.data != null && serviceApi == null) {
-      final identity = authApi.createDelegationIdentity(token.key, token.data!);
-      print("token data ${token.data!}");
+  Future<void> buildServices(dynamic identity) async {
+    if (serviceApi == null) {
       serviceApi = createServiceApi(gatewayHost, identity);
 
       accountsSyncService = AccountsSyncService(serviceApi!, hiveBoxes);
       balanceSyncService = BalanceSyncService(serviceApi!, hiveBoxes);
       transactionSyncService =
           TransactionSyncService(serviceApi: serviceApi!, hiveBoxes: hiveBoxes);
-      neuronSyncService = NeuronSyncService(
-          serviceApi: serviceApi!, hiveBoxes: hiveBoxes);
-      proposalSyncService = ProposalSyncService(
-          serviceApi: serviceApi!, hiveBoxes: hiveBoxes);
+      neuronSyncService =
+          NeuronSyncService(serviceApi: serviceApi!, hiveBoxes: hiveBoxes);
+      proposalSyncService =
+          ProposalSyncService(serviceApi: serviceApi!, hiveBoxes: hiveBoxes);
       print("syncing accounts");
 
       await accountsSyncService!.performSync();
@@ -128,8 +138,11 @@ class PlatformICApi extends AbstractPlatformICApi {
       {required BigInt neuronId,
       required BigInt doms,
       required String toAccountId}) async {
-    final res = await promiseToFuture(serviceApi!.disburse(DisperseNeuronRequest(
-        neuronId: neuronId.toJS, amount: doms.toJS, toAccountId: toAccountId)));
+    final res = await promiseToFuture(serviceApi!.disburse(
+        DisperseNeuronRequest(
+            neuronId: neuronId.toJS,
+            amount: doms.toJS,
+            toAccountId: toAccountId)));
     print("disburse ${stringify(res)}");
     await fetchNeuron(neuronId: neuronId);
     balanceSyncService?.syncBalances();
@@ -212,7 +225,8 @@ class PlatformICApi extends AbstractPlatformICApi {
 
   @override
   Future<void> createDummyProposals({required BigInt neuronId}) async {
-    await promiseToFuture(serviceApi!.createDummyProposals(neuronId.toString()));
+    await promiseToFuture(
+        serviceApi!.createDummyProposals(neuronId.toString()));
     await fetchProposals(
         excludeTopics: [],
         includeStatus: ProposalStatus.values,
@@ -221,7 +235,8 @@ class PlatformICApi extends AbstractPlatformICApi {
 
   @override
   Future<Proposal> fetchProposal({required BigInt proposalId}) async {
-    final response = await promiseToFuture(serviceApi!.getProposalInfo(proposalId.toJS));
+    final response =
+        await promiseToFuture(serviceApi!.getProposalInfo(proposalId.toJS));
     final json = jsonDecode(stringify(response));
     print("proposal json ${stringify(response)}");
     final proposal = await proposalSyncService!.storeProposal(json);
@@ -231,13 +246,13 @@ class PlatformICApi extends AbstractPlatformICApi {
 
   @override
   Future<dynamic> connectToHardwareWallet() {
-    return promiseToFuture(authApi.connectToHardwareWallet());
+    return promiseToFuture(authApi!.connectToHardwareWallet());
   }
 
   @override
   Future<HardwareWalletApi> createHardwareWalletApi(
       {dynamic ledgerIdentity}) async {
-    final identity = await promiseToFuture(authApi.connectToHardwareWallet());
+    final identity = await promiseToFuture(authApi!.connectToHardwareWallet());
     print(identity);
     return HardwareWalletApi(gatewayHost, identity);
   }
@@ -263,13 +278,14 @@ class PlatformICApi extends AbstractPlatformICApi {
   Future<Neuron> spawnNeuron({required BigInt neuronId}) async {
     print("SpawnRequest ${neuronId}");
 
-    final spawnResponse = await promiseToFuture(serviceApi!.spawn(SpawnRequest(neuronId:neuronId.toJS, newController: null)));
+    final spawnResponse = await promiseToFuture(serviceApi!
+        .spawn(SpawnRequest(neuronId: neuronId.toJS, newController: null)));
     // print("spawnResponse " + stringify(spawnResponse));
     final createdNeuronId = spawnResponse.createdNeuronId.toString();
     await neuronSyncService!.fetchNeurons();
-    return hiveBoxes.neurons.values.firstWhere((element) => element.identifier == createdNeuronId);
+    return hiveBoxes.neurons.values
+        .firstWhere((element) => element.identifier == createdNeuronId);
   }
-
 }
 
 @JS()

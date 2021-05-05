@@ -15,7 +15,7 @@ class PlatformICApi extends AbstractPlatformICApi {
     throw UnimplementedError();
   }
 
-  Future<void> buildServices() async {}
+  Future<void> buildServices(dynamic identity) async {}
 
   @override
   Future<void> acquireICPTs(
@@ -178,6 +178,11 @@ class PlatformICApi extends AbstractPlatformICApi {
   @override
   Future<Neuron> spawnNeuron({required BigInt neuronId}) {
     throw UnimplementedError();
+  }
+
+  @override
+  void authAndBuildServices() {
+    // TODO: implement authAndBuildServices
   }
 
 

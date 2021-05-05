@@ -134,7 +134,7 @@ class WalletRouteParser extends RouteInformationParser<PageConfig> {
       token.creationDate = DateTime.now();
       await token.save();
       print("access token stored");
-      context.icApi.buildServices();
+      // context.icApi.buildServices();
       return true;
     } else {
       print("Could not find token on disk");

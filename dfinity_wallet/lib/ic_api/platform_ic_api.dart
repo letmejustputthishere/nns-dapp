@@ -11,12 +11,13 @@ abstract class AbstractPlatformICApi {
 
 
   AbstractPlatformICApi(this.hiveBoxes) {
-    buildServices();
+    authAndBuildServices();
   }
 
+  void authAndBuildServices();
   void authenticate(BuildContext context);
 
-  Future<void> buildServices();
+  Future<void> buildServices(dynamic identity);
   Future<void> refreshAccounts();
 
   Future<void> acquireICPTs(

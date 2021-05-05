@@ -22,6 +22,10 @@ window["createBigInt"] = function(bigIntString: string): BigInt {
     return BigInt(bigIntString)
 }
 
+window["createAuthApi"] = () : Promise<AuthApi> => {
+    return AuthApi.create();
+}
+
 window["createServiceApi"] = function(host: string, identity: SignIdentity): ServiceApi {
     return new ServiceApi(host, identity);
 }

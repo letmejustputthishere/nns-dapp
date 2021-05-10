@@ -39,7 +39,8 @@ export default class Service implements ServiceInterface {
         const result = {};
         request.accounts.forEach((a, index) => {
             result[a] = balances[index];
-        })
+        });
+        console.log(result);
         return result;
     }
 

@@ -3,8 +3,9 @@ import ledgerServiceBuilder from "./src/canisters/ledger/builder";
 import { HttpAgent, Principal } from "@dfinity/agent";
 import GOVERNANCE_CANISTER_ID from "./src/canisters/governance/canisterId";
 import { Option } from "./src/canisters/option";
+import {principalToAccountIdentifier} from "./src/canisters/converter";
 
-export const reattemptNeuronStakeNotification = async (blockHeight: bigint, fromSubAccountId: Option<number>, memo: bigint) : Promise<void> => {
+export const reattemptNeuronStakeNotification = async (blockHeight: bigint, fromSubAccountId: Option<number>, memo: bigint, recipient: string) : Promise<void> => {
     const authClient = await AuthClient.create();
     const identity = authClient.getIdentity();
 
@@ -14,9 +15,9 @@ export const reattemptNeuronStakeNotification = async (blockHeight: bigint, from
 
     const ledgerService = ledgerServiceBuilder(agent, identity);
 
-    const memoArray = bigIntToUint8Array(memo);
+    const nonce = await calculateNonce(authClient.getIdentity().getPrincipal().toString(), memo, recipient);
 
-    const subAccount = await buildSubAccount(memoArray, identity.getPrincipal());
+    const subAccount = await buildSubAccount(nonce, identity.getPrincipal());
 
     await ledgerService.notify({
         toCanister: GOVERNANCE_CANISTER_ID,
@@ -24,15 +25,6 @@ export const reattemptNeuronStakeNotification = async (blockHeight: bigint, from
         fromSubAccountId,
         toSubAccount: subAccount
     })
-}
-
-// Taken from https://stackoverflow.com/a/56943145
-const bigIntToUint8Array = (value: bigint) : Uint8Array => {
-    const array = new Uint8Array(8);
-    const view = new DataView(array.buffer, array.byteOffset, array.byteLength);
-    view.setBigUint64(0, value);
-
-    return array;
 }
 
 // 32 bytes
@@ -53,8 +45,34 @@ const asciiStringToByteArray = (text: string) : Array<number> => {
         .map(c => c.charCodeAt(0));
 }
 
+const calculateNonce = async (principal: string, estimate: bigint, expectedAccountIdentifier: string) : Promise<Uint8Array> => {
+    const min = estimate - BigInt(2000);
+    const max = estimate + BigInt(2000);
+    let attempt = min;
+    while (attempt < max) {
+        const nonce = bigIntToUint8Array(attempt);
+        const toSubAccount = await buildSubAccount(nonce, Principal.fromText(principal));
+
+        const accountIdentifier = principalToAccountIdentifier(GOVERNANCE_CANISTER_ID, toSubAccount);
+        if (accountIdentifier === expectedAccountIdentifier) {
+            return nonce;
+        }
+        attempt++;
+    }
+    throw Error("Unable to find matching nonce");
+}
+
+const bigIntToUint8Array = (value: bigint) : Uint8Array => {
+    const array = new Uint8Array(8);
+    const view = new DataView(array.buffer, array.byteOffset, array.byteLength);
+    view.setBigUint64(0, value);
+
+    return array;
+}
+
 // ENTER DETAILS HERE!
-const blockHeight: bigint = 0n;
-const subAccountIndex: number = null;
-const memo: bigint = 0n;
-reattemptNeuronStakeNotification(blockHeight, subAccountIndex, memo).then(_ => console.log("Done!"));
+const blockHeight: bigint = 28826n;
+const subAccountIndex: number = null; // This will most likely always be null
+const memo: bigint = 16544917614427265000n;
+const recipient: string = "de72119fd02b0e9143305a841b3cb95a870d20f9953daa229d31c2ed615fdffb";
+reattemptNeuronStakeNotification(blockHeight, subAccountIndex, memo, recipient).then(_ => console.log("Done!"));

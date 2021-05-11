@@ -9,15 +9,16 @@ const auth_client_1 = require("@dfinity/auth-client");
 const builder_1 = __importDefault(require("./src/canisters/ledger/builder"));
 const agent_1 = require("@dfinity/agent");
 const canisterId_1 = __importDefault(require("./src/canisters/governance/canisterId"));
-const reattemptNeuronStakeNotification = async (blockHeight, fromSubAccountId, memo) => {
+const converter_1 = require("./src/canisters/converter");
+const reattemptNeuronStakeNotification = async (blockHeight, fromSubAccountId, memo, recipient) => {
     const authClient = await auth_client_1.AuthClient.create();
     const identity = authClient.getIdentity();
     const agent = new agent_1.HttpAgent({
         identity: authClient.getIdentity()
     });
     const ledgerService = builder_1.default(agent, identity);
-    const memoArray = bigIntToUint8Array(memo);
-    const subAccount = await buildSubAccount(memoArray, identity.getPrincipal());
+    const nonce = await calculateNonce(authClient.getIdentity().getPrincipal().toString(), memo, recipient);
+    const subAccount = await buildSubAccount(nonce, identity.getPrincipal());
     await ledgerService.notify({
         toCanister: canisterId_1.default,
         blockHeight,
@@ -26,13 +27,6 @@ const reattemptNeuronStakeNotification = async (blockHeight, fromSubAccountId, m
     });
 };
 exports.reattemptNeuronStakeNotification = reattemptNeuronStakeNotification;
-// Taken from https://stackoverflow.com/a/56943145
-const bigIntToUint8Array = (value) => {
-    const array = new Uint8Array(8);
-    const view = new DataView(array.buffer, array.byteOffset, array.byteLength);
-    view.setBigUint64(0, value);
-    return array;
-};
 // 32 bytes
 async function buildSubAccount(nonce, principal) {
     const padding = asciiStringToByteArray("neuron-stake");
@@ -50,20 +44,42 @@ const asciiStringToByteArray = (text) => {
         .from(text)
         .map(c => c.charCodeAt(0));
 };
+const calculateNonce = async (principal, estimate, expectedAccountIdentifier) => {
+    const min = estimate - BigInt(2000);
+    const max = estimate + BigInt(2000);
+    let attempt = min;
+    while (attempt < max) {
+        const nonce = bigIntToUint8Array(attempt);
+        const toSubAccount = await buildSubAccount(nonce, agent_1.Principal.fromText(principal));
+        const accountIdentifier = converter_1.principalToAccountIdentifier(canisterId_1.default, toSubAccount);
+        if (accountIdentifier === expectedAccountIdentifier) {
+            return nonce;
+        }
+        attempt++;
+    }
+    throw Error("Unable to find matching nonce");
+};
+const bigIntToUint8Array = (value) => {
+    const array = new Uint8Array(8);
+    const view = new DataView(array.buffer, array.byteOffset, array.byteLength);
+    view.setBigUint64(0, value);
+    return array;
+};
 // ENTER DETAILS HERE!
-const blockHeight = 0n;
+const blockHeight = 28826n;
 const subAccountIndex = null;
-const memo = 0n;
-exports.reattemptNeuronStakeNotification(blockHeight, subAccountIndex, memo).then(_ => console.log("Done!"));
+const memo = 16544917614427265000n;
+const recipient = "de72119fd02b0e9143305a841b3cb95a870d20f9953daa229d31c2ed615fdffb";
+exports.reattemptNeuronStakeNotification(blockHeight, subAccountIndex, memo, recipient).then(_ => console.log("Done!"));
 
-},{"./src/canisters/governance/canisterId":4,"./src/canisters/ledger/builder":7,"@dfinity/agent":31,"@dfinity/auth-client":44}],2:[function(require,module,exports){
+},{"./src/canisters/converter":3,"./src/canisters/governance/canisterId":4,"./src/canisters/ledger/builder":7,"@dfinity/agent":31,"@dfinity/auth-client":44}],2:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.HOST = exports.SUB_ACCOUNT_BYTE_LENGTH = void 0;
 exports.SUB_ACCOUNT_BYTE_LENGTH = 32;
 // TODO get this from build arg
-exports.HOST = undefined;
-// export const HOST = "https://cdtesting.dfinity.network/"; // TEST CONFIG
+// export const HOST: string = undefined;
+exports.HOST = "https://cdtesting.dfinity.network/"; // TEST CONFIG
 
 },{}],3:[function(require,module,exports){
 "use strict";

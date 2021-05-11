@@ -16,11 +16,11 @@ const reattemptNeuronStakeNotification = async (blockHeight, fromSubAccountId, m
         identity: authClient.getIdentity()
     });
     const ledgerService = builder_1.default(agent, identity);
-    const memoArray = bigIntToUint8Array(BigInt(memo));
+    const memoArray = bigIntToUint8Array(memo);
     const subAccount = await buildSubAccount(memoArray, identity.getPrincipal());
     await ledgerService.notify({
         toCanister: canisterId_1.default,
-        blockHeight: BigInt(blockHeight),
+        blockHeight,
         fromSubAccountId,
         toSubAccount: subAccount
     });
@@ -51,7 +51,10 @@ const asciiStringToByteArray = (text) => {
         .map(c => c.charCodeAt(0));
 };
 // ENTER DETAILS HERE!
-exports.reattemptNeuronStakeNotification("0", null, "0").then(_ => console.log("Done!"));
+const blockHeight = 0n;
+const subAccountIndex = null;
+const memo = 0n;
+exports.reattemptNeuronStakeNotification(blockHeight, subAccountIndex, memo).then(_ => console.log("Done!"));
 
 },{"./src/canisters/governance/canisterId":4,"./src/canisters/ledger/builder":7,"@dfinity/agent":31,"@dfinity/auth-client":44}],2:[function(require,module,exports){
 "use strict";

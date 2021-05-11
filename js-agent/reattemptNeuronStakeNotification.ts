@@ -4,7 +4,7 @@ import { HttpAgent, Principal } from "@dfinity/agent";
 import GOVERNANCE_CANISTER_ID from "./src/canisters/governance/canisterId";
 import { Option } from "./src/canisters/option";
 
-export const reattemptNeuronStakeNotification = async (blockHeight: string, fromSubAccountId: Option<number>, memo: string) : Promise<void> => {
+export const reattemptNeuronStakeNotification = async (blockHeight: bigint, fromSubAccountId: Option<number>, memo: bigint) : Promise<void> => {
     const authClient = await AuthClient.create();
     const identity = authClient.getIdentity();
 
@@ -14,13 +14,13 @@ export const reattemptNeuronStakeNotification = async (blockHeight: string, from
 
     const ledgerService = ledgerServiceBuilder(agent, identity);
 
-    const memoArray = bigIntToUint8Array(BigInt(memo));
+    const memoArray = bigIntToUint8Array(memo);
 
     const subAccount = await buildSubAccount(memoArray, identity.getPrincipal());
 
     await ledgerService.notify({
         toCanister: GOVERNANCE_CANISTER_ID,
-        blockHeight: BigInt(blockHeight),
+        blockHeight,
         fromSubAccountId,
         toSubAccount: subAccount
     })
@@ -54,4 +54,7 @@ const asciiStringToByteArray = (text: string) : Array<number> => {
 }
 
 // ENTER DETAILS HERE!
-reattemptNeuronStakeNotification("0", null, "0").then(_ => console.log("Done!"));
+const blockHeight: bigint = 0n;
+const subAccountIndex: number = null;
+const memo: bigint = 0n;
+reattemptNeuronStakeNotification(blockHeight, subAccountIndex, memo).then(_ => console.log("Done!"));

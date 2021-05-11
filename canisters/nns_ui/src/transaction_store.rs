@@ -656,7 +656,7 @@ impl StableState for TransactionStore {
             accounts,
             block_height_synced_up_to,
             empty_account_indices,
-            accounts_count: 10,
+            accounts_count,
             sub_accounts_count,
             hardware_wallet_accounts_count,
             last_ledger_sync_timestamp_nanos

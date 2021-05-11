@@ -52,6 +52,7 @@ import NnsUiService, {
 } from "./canisters/nnsUI/model";
 import icManagementBuilder from "./canisters/icManagement/builder";
 import ICManagementService, { CanisterDetailsResponse, UpdateSettingsRequest, UpdateSettingsResponse } from "./canisters/icManagement/model";
+import { create_dummy_proposals, test_canisters } from "./tests";
 import createNeuronImpl, { CreateNeuronRequest } from "./canisters/createNeuron";
 import { createCanisterImpl, topupCanisterImpl, CreateCanisterRequest, TopupCanisterRequest, CreateCanisterResponse } from "./canisters/createCanister";
 import { AccountIdentifier, BlockHeight, CanisterId, E8s, NeuronId } from "./canisters/common/types";
@@ -260,5 +261,38 @@ export default class ServiceApi {
 
     public getIcpToCyclesConversionRate = (): Promise<bigint> => {
         return this.nnsUiService.getIcpToCyclesConversionRate();
+    } 
+
+    /* 
+        TEMPOARY 
+    */
+
+    // Temporary method for demo purposes only, to give the specified account some ICPTs
+    // by sending from the anon account which has been gifted lots of ICPTs
+    public acquireICPTs = async (accountIdentifier: AccountIdentifier, e8s: E8s): Promise<void> => {
+        const anonIdentity = new AnonymousIdentity();
+        const agent = new HttpAgent({
+            host: HOST,
+            identity: anonIdentity
+        });
+        const anonLedgerService = ledgerBuilder(agent, anonIdentity);
+        const req = {
+            to: accountIdentifier,
+            amount: e8s
+        }
+        await anonLedgerService.sendICPTs(req);
+    }
+
+    // Temporary method to trigger test code from the UI
+    public integrationTest = async (): Promise<void> => {
+        //await test_canisters(this.identity);
+        await create_dummy_proposals(this.identity, BigInt(14555136043219406248n));
+        // await vote_for_authorized_subnetworks_proposal(this.host, this.identity);
+        // await test_happy_path(this.host, this.identity);
+    }
+
+    // Temporary method to trigger test code from the UI
+    public createDummyProposals = (neuronId: string): Promise<void> => {
+        return create_dummy_proposals(this.identity, BigInt(neuronId));
     }
 }

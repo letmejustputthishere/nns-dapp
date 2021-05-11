@@ -5,8 +5,8 @@ import { LedgerIdentity } from "@dfinity/identity-ledgerhq";
 import { Option } from "./canisters/option";
 
 // TODO get this from build arg
-const IDENTITY_SERVICE_URL = "https://identity.ic0.app/";
-// const IDENTITY_SERVICE_URL = "https://qvhpv-4qaaa-aaaaa-aaagq-cai.cdtesting.dfinity.network/"; // TEST CONFIG
+//const IDENTITY_SERVICE_URL = "https://identity.ic0.app/";
+ const IDENTITY_SERVICE_URL = "https://qvhpv-4qaaa-aaaaa-aaagq-cai.cdtesting.dfinity.network/"; // TEST CONFIG
 
 const ONE_MINUTE_MILLIS = 60 * 1000;
 

@@ -17,7 +17,7 @@
     },
     "testnet": {
       "providers": [
-        "http://10.12.31.5:8080/"
+        "https://cdtesting.dfinity.network"
       ],
       "type": "persistent"
     },

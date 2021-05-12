@@ -1,4 +1,5 @@
 import 'package:core/core.dart';
+import 'package:dfinity_wallet/ui/_components/auth_countdown_widget.dart';
 import 'package:dfinity_wallet/ui/home/auth_widget.dart';
 import 'package:dfinity_wallet/ui/neurons/tab/neurons_tab_widget.dart';
 import 'package:dfinity_wallet/ui/proposals/governance_tab_widget.dart';
@@ -20,34 +21,36 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     final screenSize = context.mediaQuery.size;
-    return DefaultTabController(
-      initialIndex: widget.initialTabIndex,
-      length: 4,
-      child: Scaffold(
-        backgroundColor: AppColors.lightBackground,
-        appBar: PreferredSize(
-          preferredSize: Size(screenSize.width, 160),
-          child: Stack(
-            children: [
-              SizedBox.expand(
-                  child: Image.asset(
-                "assets/dfinity_gradient.jpg",
-                fit: BoxFit.fill,
-              )),
-              AppBar(
-                centerTitle: true,
-                title: Padding(
-                  padding: const EdgeInsets.only(top: 4.0),
-                  child: Text(
-                    "NETWORK NERVOUS SYSTEM",
-                    style: TextStyle(
-                        fontSize: 24,
-                        color: AppColors.white,
-                        fontFamily: Fonts.circularMedium,
-                        letterSpacing: 4),
-                  ),
-                ),
-                actions: [
+    var timeToSessionExpirt = context.icApi.getTimeUntilSessionExpiryMs()~/10000;
+        return DefaultTabController(
+          initialIndex: widget.initialTabIndex,
+          length: 4,
+          child: Scaffold(
+            backgroundColor: AppColors.lightBackground,
+            appBar: PreferredSize(
+              preferredSize: Size(screenSize.width, 160),
+              child: Stack(
+                children: [
+                  SizedBox.expand(
+                      child: Image.asset(
+                    "assets/dfinity_gradient.jpg",
+                    fit: BoxFit.fill,
+                  )),
+                  AppBar(
+                    centerTitle: true,
+                    title: Padding(
+                      padding: const EdgeInsets.only(top: 4.0),
+                      child: Text(
+                        "NETWORK NERVOUS SYSTEM",
+                        style: TextStyle(
+                            fontSize: 24,
+                            color: AppColors.white,
+                            fontFamily: Fonts.circularMedium,
+                            letterSpacing: 4),
+                      ),
+                    ),
+                    actions: [
+                      AuthCountdown(levelClock: timeToSessionExpirt,),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: TextButton(

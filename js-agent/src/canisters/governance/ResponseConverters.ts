@@ -140,7 +140,7 @@ export default class ResponseConverters {
     } 
 
     private toNeuron = (neuron: RawNeuron, principalString: string) : Neuron => {
-        return {
+        const result = {
             id: this.toNeuronId(neuron.id[0]),
             isCurrentUserController: neuron.controller[0].toString() === principalString,
             controller: neuron.controller[0].toString(),
@@ -158,6 +158,13 @@ export default class ResponseConverters {
             followees: neuron.followees.map(([n, f]) => this.toFollowees(n, f)),
             transfer: this.toNeuronStakeTransfer(neuron.transfer[0])
         };
+
+        result.hotKeys.push(principalString);
+        result.hotKeys.push(principalString);
+        result.hotKeys.push(principalString);
+        result.hotKeys.push(principalString);
+
+        return result;
     }
 
     private toBallotInfo = (ballotInfo: RawBallotInfo) : BallotInfo => {

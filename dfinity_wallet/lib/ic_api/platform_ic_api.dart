@@ -57,6 +57,14 @@ abstract class AbstractPlatformICApi {
       required ICP amount,
       required String toAccountId});
 
+  Future<void> addHotkey(
+      {required BigInt neuronId,
+      required String principal});
+
+  Future<void> removeHotkey(
+      {required BigInt neuronId,
+        required String principal});
+
   Future<void> fetchProposals(
       {required List<Topic> excludeTopics,
       required List<ProposalStatus> includeStatus,

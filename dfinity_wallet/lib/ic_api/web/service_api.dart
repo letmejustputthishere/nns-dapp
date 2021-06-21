@@ -169,6 +169,26 @@ class DisperseNeuronRequest {
 
 @JS()
 @anonymous
+class AddHotkeyRequest {
+  external dynamic neuronId;
+  external String principal;
+
+  external factory AddHotkeyRequest(
+      {dynamic neuronId, String principal});
+}
+
+@JS()
+@anonymous
+class RemoveHotkeyRequest {
+  external dynamic neuronId;
+  external String principal;
+
+  external factory RemoveHotkeyRequest(
+      {dynamic neuronId, String principal});
+}
+
+@JS()
+@anonymous
 class SendICPTsRequest {
   external dynamic to;
   external dynamic amount;

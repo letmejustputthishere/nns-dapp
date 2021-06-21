@@ -87,7 +87,8 @@ export default class Service implements ServiceInterface {
     
     public removeHotKey = async (request: RemoveHotKeyRequest) : Promise<EmptyResponse> => {
         const rawRequest = this.requestConverters.fromRemoveHotKeyRequest(request);
-        await this.service.manage_neuron(rawRequest);
+        const response = await this.service.manage_neuron(rawRequest);
+        console.log(response);
         return { Ok: null };
     }
 

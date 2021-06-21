@@ -187,6 +187,27 @@ class PlatformICApi extends AbstractPlatformICApi {
   }
 
   @override
+  Future<void> addHotkey({required BigInt neuronId, required String principal}) async {
+    await promiseToFuture(
+      serviceApi!.addHotKey(AddHotkeyRequest(
+        neuronId: neuronId.toJS,
+        principal: principal
+      )));
+    await fetchNeuron(neuronId: neuronId);
+  }
+
+  @override
+  Future<void> removeHotkey({required BigInt neuronId, required String principal}) async {
+    final request = RemoveHotkeyRequest(
+        neuronId: neuronId.toJS,
+        principal: principal
+    );
+    await promiseToFuture(
+      serviceApi!.removeHotKey(request));
+    await fetchNeuron(neuronId: neuronId);
+  }
+
+  @override
   Future<void> fetchProposals(
       {required List<Topic> excludeTopics,
       required List<ProposalStatus> includeStatus,

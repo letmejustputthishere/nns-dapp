@@ -1,6 +1,7 @@
 import 'package:dfinity_wallet/ui/_components/constrain_width_and_center.dart';
 import 'package:dfinity_wallet/ui/_components/form_utils.dart';
 import 'package:dfinity_wallet/ui/neurons/following/neuron_followees_card.dart';
+import 'package:dfinity_wallet/ui/neurons/detail/neuron_hotkeys_card.dart';
 import 'package:dfinity_wallet/ui/neurons/detail/neuron_rewards_card.dart';
 import 'package:dfinity_wallet/ui/neurons/detail/neuron_state_card.dart';
 import 'package:dfinity_wallet/ui/neurons/proposal/neuron_proposals_card.dart';
@@ -47,9 +48,7 @@ class _NeuronDetailWidgetState extends State<NeuronDetailWidget> {
                       NeuronRewardsCard(neuron: widget.neuron),
                       NeuronVotesCard(neuron: widget.neuron),
                       NeuronFolloweesCard(neuron: widget.neuron),
-                        if(false)
-                      NeuronProposalsCard(neuron: widget.neuron),
-
+                      NeuronHotkeysCard(neuron: widget.neuron),
                       TallFormDivider(),
                     ],
                   ),

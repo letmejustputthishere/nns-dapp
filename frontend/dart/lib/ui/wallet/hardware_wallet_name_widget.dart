@@ -49,8 +49,10 @@ class HardwareWalletNameWidget extends StatelessWidget {
                   "Connect to Wallet",
                 ),
                 onPressed: () async {
-                  WizardOverlay.of(context).pushPage("Connect to Wallet",
-                      AttachHardwareWalletWidget(name: nameField.currentValue));
+                  WizardOverlay.of(context).pushPage(
+                      "Connect to Wallet",
+                      AttachHardwareWalletWidget(name: nameField.currentValue),
+                      context);
                 },
                 fields: [nameField],
               )),

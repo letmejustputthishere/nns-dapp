@@ -76,7 +76,8 @@ class _NewCanisterCyclesAmountWidgetState
                               amount: icpAmount!,
                               source: widget.source,
                               fromSubAccountId: widget.source.subAccountId,
-                              trillionRatio: trillionRatio!));
+                              trillionRatio: trillionRatio!),
+                          context);
                     }.takeIf((e) => icpAmount != null),
                   ))
             ],

@@ -182,6 +182,7 @@ class _CanisterDetailWidgetState extends State<CanisterDetailWidget> {
                                 OverlayBaseWidget.show(
                                     context,
                                     WizardOverlay(
+                                        buildContext: context,
                                         rootTitle: "Top Up Canister",
                                         rootWidget: SelectCyclesOriginWidget(
                                           onSelected: (account, context) {
@@ -190,7 +191,8 @@ class _CanisterDetailWidgetState extends State<CanisterDetailWidget> {
                                                 TopUpCyclesAmountWidget(
                                                     source: account,
                                                     destinationCanister:
-                                                        canister));
+                                                        canister),
+                                                context);
                                           },
                                         )));
                               }),

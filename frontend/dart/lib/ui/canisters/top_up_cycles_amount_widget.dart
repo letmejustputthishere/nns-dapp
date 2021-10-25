@@ -111,7 +111,8 @@ class _TopUpCyclesAmountWidgetState extends State<TopUpCyclesAmountWidget> {
                             source: widget.source,
                             destination: widget.destinationCanister,
                             trillionAmount: trillionRatio!,
-                          ));
+                          ),
+                          context);
                     }.takeIf((e) => icpAmount != null && trillionRatio != null),
                   ))
             ],

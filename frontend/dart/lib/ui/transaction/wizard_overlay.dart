@@ -5,8 +5,13 @@ import '../../nns_dapp.dart';
 class WizardOverlay extends StatefulWidget {
   final Widget rootWidget;
   final String rootTitle;
+  final BuildContext buildContext;
 
-  WizardOverlay({Key? key, required this.rootTitle, required this.rootWidget})
+  WizardOverlay(
+      {Key? key,
+      required this.rootTitle,
+      required this.rootWidget,
+      required this.buildContext})
       : super(key: key);
 
   static WizardOverlayState of(BuildContext context) =>
@@ -24,19 +29,22 @@ class WizardOverlayState extends State<WizardOverlay> {
   @override
   void initState() {
     super.initState();
-    pages.add(createPage(title: widget.rootTitle, widget: widget.rootWidget));
+    pages.add(createPage(
+        title: widget.rootTitle,
+        widget: widget.rootWidget,
+        context: widget.buildContext));
   }
 
-  void pushPage(String? title, Widget widget) {
+  void pushPage(String? title, Widget widget, BuildContext context) {
     setState(() {
-      pages.add(createPage(title: title, widget: widget));
+      pages.add(createPage(title: title, widget: widget, context: context));
     });
   }
 
-  void replacePage(String? title, Widget widget) {
+  void replacePage(String? title, Widget widget, BuildContext context) {
     setState(() {
       pages.clear();
-      pages.add(createPage(title: title, widget: widget));
+      pages.add(createPage(title: title, widget: widget, context: context));
     });
   }
 
@@ -65,41 +73,41 @@ class WizardOverlayState extends State<WizardOverlay> {
     );
   }
 
-  MaterialPage createPage({String? title, required Widget widget}) =>
+  MaterialPage createPage(
+          {String? title,
+          required Widget widget,
+          required BuildContext context}) =>
       MaterialPage(
           child: Scaffold(
               backgroundColor: AppColors.lighterBackground,
               appBar: (title != null)
-                  ? PreferredSize(
-                      preferredSize: Size.fromHeight(60),
-                      child: AppBar(
-                        backgroundColor: AppColors.lighterBackground,
-                        actions: [
-                          AspectRatio(
-                              aspectRatio: 1,
-                              child: TextButton(
-                                onPressed: () {
-                                  OverlayBaseWidget.of(context)?.dismiss();
-                                },
-                                child: Center(
-                                  child: Text(
-                                    "✕",
-                                    style: TextStyle(
-                                        fontFamily: Fonts.circularBook,
-                                        fontSize: 20,
-                                        color: AppColors.white),
-                                  ),
+                  ? AppBar(
+                      backgroundColor: AppColors.lighterBackground,
+                      actions: [
+                        AspectRatio(
+                            aspectRatio: 1,
+                            child: TextButton(
+                              onPressed: () {
+                                OverlayBaseWidget.of(context)?.dismiss();
+                                print("Overlay x has been pressed");
+                              },
+                              child: Center(
+                                child: Text(
+                                  "✕",
+                                  style: TextStyle(
+                                      fontFamily: Fonts.circularBook,
+                                      fontSize: 20,
+                                      color: AppColors.white),
                                 ),
-                              )),
-                        ],
-                        title: Text(title,
-                            overflow: TextOverflow.visible,
-                            style: TextStyle(
-                                fontSize:
-                                    Responsive.isMobile(context) ? 15 : 25,
-                                fontFamily: Fonts.circularBook,
-                                color: AppColors.gray50)),
-                      ),
+                              ),
+                            )),
+                      ],
+                      title: Text(title,
+                          overflow: TextOverflow.visible,
+                          style: TextStyle(
+                              fontSize: Responsive.isMobile(context) ? 15 : 25,
+                              fontFamily: Fonts.circularBook,
+                              color: AppColors.gray50)),
                     )
                   : null,
               body: widget));

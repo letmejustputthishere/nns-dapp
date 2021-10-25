@@ -79,14 +79,16 @@ class _SelectDestinationAccountPageState
                                       amount: widget.source.balance,
                                       source: widget.source,
                                       destination: address,
-                                    ));
+                                    ),
+                                    context);
                               } else {
                                 WizardOverlay.of(context).pushPage(
                                     "Enter ICP Amount",
                                     EnterAmountPage(
                                       source: widget.source,
                                       destinationAccountIdentifier: address,
-                                    ));
+                                    ),
+                                    context);
                               }
                             },
                           ),
@@ -132,7 +134,8 @@ class _SelectDestinationAccountPageState
                                                 source: widget.source,
                                                 destination:
                                                     e.accountIdentifier,
-                                              ));
+                                              ),
+                                              context);
                                         } else {
                                           WizardOverlay.of(context).pushPage(
                                               "Enter ICP Amount",
@@ -140,7 +143,8 @@ class _SelectDestinationAccountPageState
                                                 source: widget.source,
                                                 destinationAccountIdentifier:
                                                     e.accountIdentifier,
-                                              ));
+                                              ),
+                                              context);
                                         }
                                       })),
                             ),

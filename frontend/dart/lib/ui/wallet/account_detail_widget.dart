@@ -207,15 +207,17 @@ class _AccountDetailPageState extends State<AccountDetailPage> {
                                                   res.when(
                                                       ok: (neurons) {
                                                         OverlayBaseWidget.show(
-                                                            context,
-                                                            WizardOverlay(
-                                                                rootTitle:
-                                                                    "Neurons",
-                                                                rootWidget:
-                                                                    HardwareListNeurons(
-                                                                  neurons:
-                                                                      neurons,
-                                                                )));
+                                                          context,
+                                                          WizardOverlay(
+                                                              rootTitle:
+                                                                  "Neurons",
+                                                              rootWidget:
+                                                                  HardwareListNeurons(
+                                                                      neurons:
+                                                                          neurons),
+                                                              buildContext:
+                                                                  context),
+                                                        );
                                                       },
                                                       err: (err) => js.context
                                                           .callMethod("alert",
@@ -257,6 +259,7 @@ class _AccountDetailPageState extends State<AccountDetailPage> {
                                       rootWidget:
                                           SelectAccountTransactionTypeWidget(
                                               source: account),
+                                      buildContext: context,
                                     ));
                               } else {
                                 OverlayBaseWidget.show(
@@ -267,6 +270,7 @@ class _AccountDetailPageState extends State<AccountDetailPage> {
                                           SelectAccountTransactionTypeWidget(
                                         source: account,
                                       ),
+                                      buildContext: context,
                                     ));
                               }
                             }),

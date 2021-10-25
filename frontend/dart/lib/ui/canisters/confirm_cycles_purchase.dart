@@ -166,7 +166,8 @@ class ConfirmCyclesPurchase extends StatelessWidget {
                             amount: amount,
                             source: source,
                             destination: destination.identifier,
-                          ));
+                          ),
+                          context);
                     }),
               ),
               SmallFormDivider()

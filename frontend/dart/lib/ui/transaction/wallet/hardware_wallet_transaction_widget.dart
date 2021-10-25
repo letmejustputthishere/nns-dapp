@@ -117,7 +117,8 @@ class _HardwareWalletTransactionWidgetState
                           amount: widget.amount,
                           source: widget.account,
                           destination: widget.destination,
-                        ));
+                        ),
+                        context);
                   }, err: (err) {
                     // An error occurred during transfer. Display the error.
                     js.context.callMethod("alert", ["$err"]);

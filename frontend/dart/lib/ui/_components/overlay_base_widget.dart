@@ -147,6 +147,7 @@ class _OverlayBaseWidgetState extends State<OverlayBaseWidget>
   }
 
   void dismiss() async {
+    print("U pressed dismiss");
     scaleAnim = Tween(begin: 0.8, end: 1.0).animate(
         CurvedAnimation(parent: _animationController, curve: Curves.easeIn))
       ..addListener(() {

@@ -28,13 +28,14 @@ class SelectAccountTransactionTypeWidget extends StatelessWidget {
                       "Destination Account",
                       SelectDestinationAccountPage(
                         source: source,
-                      ));
+                      ),
+                      context);
                 }),
                 SmallFormDivider(),
                 buildButton(context, "Stake",
                     "Stake ICP in a neuron to participate in governance", () {
                   WizardOverlay.of(context).pushPage(
-                      "Stake Neuron", StakeNeuronPage(source: source));
+                      "Stake Neuron", StakeNeuronPage(source: source), context);
                 }),
                 SizedBox(
                   height: 50,

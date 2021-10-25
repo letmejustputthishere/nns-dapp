@@ -139,6 +139,7 @@ class NeuronFolloweesCard extends StatelessWidget {
                               completeAction: (context) {
                                 OverlayBaseWidget.of(context)?.dismiss();
                               }),
+                          buildContext: context,
                         ),
                         maxSize: Size(
                             700, MediaQuery.of(context).size.height - 100));

@@ -44,6 +44,7 @@ class _AccountsTabWidgetState extends State<AccountsTabWidget> {
                     WizardOverlay(
                       rootTitle: "Select Source Account",
                       rootWidget: SelectSourceWallet(isStakeNeuron: false),
+                      buildContext: context,
                     ),
                   );
                 },
@@ -58,6 +59,7 @@ class _AccountsTabWidgetState extends State<AccountsTabWidget> {
                     WizardOverlay(
                       rootTitle: "Add Account",
                       rootWidget: SelectAccountAddActionWidget(),
+                      buildContext: context,
                     ),
                   );
                 },
@@ -151,25 +153,27 @@ class SelectAccountAddActionWidget extends StatelessWidget {
                   onPressed: () {
                     // StringFieldValidation.maximumLength(24)
                     WizardOverlay.of(context).pushPage(
-                        "New Linked Account",
-                        Center(
-                          child: TextFieldDialogWidget(
-                              title: "New Linked Account",
-                              buttonTitle: "Create",
-                              fieldName: "Account Name",
-                              onComplete: (name) {
-                                context.callUpdate(() =>
-                                    context.icApi.createSubAccount(name: name));
-                              }),
-                        ));
+                      "New Linked Account",
+                      Center(
+                        child: TextFieldDialogWidget(
+                            title: "New Linked Account",
+                            buttonTitle: "Create",
+                            fieldName: "Account Name",
+                            onComplete: (name) {
+                              context.callUpdate(() =>
+                                  context.icApi.createSubAccount(name: name));
+                            }),
+                      ),
+                      context,
+                    );
                   }),
               SmallFormDivider(),
               WizardPathButton(
                   title: "Attach Hardware Wallet",
                   subtitle: "Link a hardware wallet to this account",
                   onPressed: () {
-                    WizardOverlay.of(context).pushPage(
-                        "Enter Wallet Name", HardwareWalletNameWidget());
+                    WizardOverlay.of(context).pushPage("Enter Wallet Name",
+                        HardwareWalletNameWidget(), context);
                   }),
               SmallFormDivider(),
               SizedBox(

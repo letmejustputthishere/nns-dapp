@@ -31,8 +31,9 @@ class SelectCanisterAddActionWidget extends StatelessWidget {
                           "Enter Amount",
                           NewCanisterCyclesAmountWidget(
                             source: account,
-                          ));
-                    }));
+                          ),
+                          context);
+                    }), context);
                   }),
               SizedBox(
                 height: 24.0,
@@ -41,8 +42,8 @@ class SelectCanisterAddActionWidget extends StatelessWidget {
                   title: "Link Canister To Account",
                   subtitle: "Enter the id of a canister, to top up it's cycles",
                   onPressed: () {
-                    WizardOverlay.of(context)
-                        .pushPage("Attach Canister", EnterCanisterIdWidget());
+                    WizardOverlay.of(context).pushPage(
+                        "Attach Canister", EnterCanisterIdWidget(), context);
                   }),
               // SmallFormDivider(),
               // SizedBox(

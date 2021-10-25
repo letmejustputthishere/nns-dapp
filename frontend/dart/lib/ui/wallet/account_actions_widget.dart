@@ -47,6 +47,7 @@ class _AccountActionsWidgetState extends State<AccountActionsWidget> {
                     rootWidget: SelectAccountTransactionTypeWidget(
                       source: widget.primaryAccount,
                     ),
+                    buildContext: context,
                   ));
             },
           ),

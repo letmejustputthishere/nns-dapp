@@ -68,6 +68,7 @@ Your principal id is "${context.icApi.getPrincipal()}"''',
               WizardOverlay(
                 rootTitle: "Select Source Account",
                 rootWidget: SelectSourceWallet(isStakeNeuron: true),
+                buildContext: context,
               ),
             );
           },

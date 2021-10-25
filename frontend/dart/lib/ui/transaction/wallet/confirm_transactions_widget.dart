@@ -83,7 +83,8 @@ class _ConfirmTransactionWidgetState extends State<ConfirmTransactionWidget> {
                                   amount: widget.amount,
                                   source: widget.source,
                                   destination: widget.destination,
-                                ));
+                                ),
+                                context);
                           }, err: (err) {
                             // Send ICP failed. Display the error.
                             js.context.callMethod("alert", ["$err"]);
@@ -110,7 +111,8 @@ class _ConfirmTransactionWidgetState extends State<ConfirmTransactionWidget> {
                                   source: widget.source,
                                   destination: widget.destination,
                                   followOnPage: neuronTabsPage,
-                                ));
+                                ),
+                                context);
                           }, err: (err) {
                             // Disburse failed. Display the error.
                             js.context.callMethod("alert", ["$err"]);
@@ -123,7 +125,8 @@ class _ConfirmTransactionWidgetState extends State<ConfirmTransactionWidget> {
                                 amount: widget.amount,
                                 destination: widget.destination,
                                 account: widget.source as Account,
-                              ));
+                              ),
+                              context);
                       }
                     }),
               ),

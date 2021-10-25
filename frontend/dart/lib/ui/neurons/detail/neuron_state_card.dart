@@ -36,6 +36,7 @@ class NeuronStateCard extends StatelessWidget {
                 rootWidget: SelectNeuronTopUpSourceWallet(
                   neuron: neuron,
                 ),
+                buildContext: context,
               ),
             );
           },
@@ -58,12 +59,14 @@ class NeuronStateCard extends StatelessWidget {
             OverlayBaseWidget.show(
                 context,
                 WizardOverlay(
-                    rootTitle: "Increase Dissolve Delay",
-                    rootWidget: IncreaseDissolveDelayWidget(
-                        neuron: neuron,
-                        onCompleteAction: (context) {
-                          OverlayBaseWidget.of(context)?.dismiss();
-                        })));
+                  rootTitle: "Increase Dissolve Delay",
+                  rootWidget: IncreaseDissolveDelayWidget(
+                      neuron: neuron,
+                      onCompleteAction: (context) {
+                        OverlayBaseWidget.of(context)?.dismiss();
+                      }),
+                  buildContext: context,
+                ));
           }.takeIf((e) => context.icApi.isNeuronControllable(neuron)),
           child: Padding(
             padding: const EdgeInsets.all(12.0),
@@ -243,14 +246,16 @@ class NeuronStateCard extends StatelessWidget {
                 OverlayBaseWidget.show(
                     context,
                     WizardOverlay(
-                        rootTitle: "Review Transaction",
-                        rootWidget: ConfirmTransactionWidget(
-                            // if we're disbursing, no fee?
-                            fee: ICP.zero,
-                            amount: this.neuron.stake,
-                            source: this.neuron,
-                            destination:
-                                "Self (${icApi.principalToAccountIdentifier(neuron.controller)}")));
+                      rootTitle: "Review Transaction",
+                      rootWidget: ConfirmTransactionWidget(
+                          // if we're disbursing, no fee?
+                          fee: ICP.zero,
+                          amount: this.neuron.stake,
+                          source: this.neuron,
+                          destination:
+                              "Self (${icApi.principalToAccountIdentifier(neuron.controller)}"),
+                      buildContext: context,
+                    ));
               } else {
                 OverlayBaseWidget.show(
                     context,
@@ -259,6 +264,7 @@ class NeuronStateCard extends StatelessWidget {
                       rootWidget: SelectDestinationAccountPage(
                         source: neuron,
                       ),
+                      buildContext: context,
                     ));
               }
             }.takeIf((e) => disburseEnabled));

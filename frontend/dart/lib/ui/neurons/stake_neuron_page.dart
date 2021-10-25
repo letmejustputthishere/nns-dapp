@@ -178,50 +178,54 @@ class _StakeNeuronPageState extends State<StakeNeuronPage> {
 
                                   // Prompt to set a dissolve delay.
                                   WizardOverlay.of(context).replacePage(
-                                      "Set Dissolve Delay",
-                                      IncreaseDissolveDelayWidget(
-                                          neuron: newNeuron!,
-                                          cancelTitle: "Skip",
-                                          onCompleteAction: (context) {
-                                            WizardOverlay.of(context)
-                                                .replacePage(
-                                                    "Follow Neurons",
-                                                    ConfigureFollowersPage(
-                                                      neuron: newNeuron,
-                                                      completeAction:
-                                                          (context) {
-                                                        OverlayBaseWidget.of(
-                                                                context)
-                                                            ?.dismiss();
-                                                        context.nav.push(
-                                                            neuronPageDef
-                                                                .createPageConfig(
-                                                                    newNeuron));
-                                                      },
-                                                    ));
-                                          }));
-                                }));
+                                    "Set Dissolve Delay",
+                                    IncreaseDissolveDelayWidget(
+                                      neuron: newNeuron!,
+                                      cancelTitle: "Skip",
+                                      onCompleteAction: (context) {
+                                        WizardOverlay.of(context).replacePage(
+                                            "Follow Neurons",
+                                            ConfigureFollowersPage(
+                                              neuron: newNeuron,
+                                              completeAction: (context) {
+                                                OverlayBaseWidget.of(context)
+                                                    ?.dismiss();
+                                                context.nav.push(neuronPageDef
+                                                    .createPageConfig(
+                                                        newNeuron));
+                                              },
+                                            ),
+                                            context);
+                                      },
+                                    ),
+                                    context,
+                                  );
+                                }),
+                            context);
                       } else {
                         final newNeuron = await context.icApi
                             .fetchNeuron(neuronId: newNeuronId.asBigInt());
                         WizardOverlay.of(context).replacePage(
-                            "Set Dissolve Delay",
-                            IncreaseDissolveDelayWidget(
-                                neuron: newNeuron!,
-                                cancelTitle: "Skip",
-                                onCompleteAction: (context) {
-                                  WizardOverlay.of(context).replacePage(
-                                      "Follow Neurons",
-                                      ConfigureFollowersPage(
-                                        neuron: newNeuron,
-                                        completeAction: (context) {
-                                          OverlayBaseWidget.of(context)
-                                              ?.dismiss();
-                                          context.nav.push(neuronPageDef
-                                              .createPageConfig(newNeuron));
-                                        },
-                                      ));
-                                }));
+                          "Set Dissolve Delay",
+                          IncreaseDissolveDelayWidget(
+                              neuron: newNeuron!,
+                              cancelTitle: "Skip",
+                              onCompleteAction: (context) {
+                                WizardOverlay.of(context).replacePage(
+                                    "Follow Neurons",
+                                    ConfigureFollowersPage(
+                                      neuron: newNeuron,
+                                      completeAction: (context) {
+                                        OverlayBaseWidget.of(context)
+                                            ?.dismiss();
+                                        context.nav.push(neuronPageDef
+                                            .createPageConfig(newNeuron));
+                                      },
+                                    ),
+                                    context);
+                              }),
+                          context,
+                        );
                       }
                     });
                   },

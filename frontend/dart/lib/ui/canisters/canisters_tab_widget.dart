@@ -74,6 +74,7 @@ Your principal id is "${context.icApi.getPrincipal()}"''',
                             WizardOverlay(
                               rootTitle: "Add Canister",
                               rootWidget: SelectCanisterAddActionWidget(),
+                              buildContext: context,
                             ),
                           );
                         },

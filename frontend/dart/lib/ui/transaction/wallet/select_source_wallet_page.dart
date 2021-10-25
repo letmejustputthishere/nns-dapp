@@ -64,13 +64,15 @@ class _SelectSourceWalletState extends State<SelectSourceWallet> {
                                         widget.isStakeNeuron
                                             ? WizardOverlay.of(context)
                                                 .pushPage(
-                                                "Stake Neuron",
-                                                StakeNeuronPage(source: source),
-                                              )
+                                                    "Stake Neuron",
+                                                    StakeNeuronPage(
+                                                        source: source),
+                                                    context)
                                             : WizardOverlay.of(context).pushPage(
                                                 "Select Destination",
                                                 SelectDestinationAccountPage(
-                                                    source: source));
+                                                    source: source),
+                                                context);
                                       })),
                             ),
                           ),

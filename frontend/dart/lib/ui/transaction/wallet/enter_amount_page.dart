@@ -163,7 +163,8 @@ class _EnterAmountPageState extends State<EnterAmountPage> {
                             amount: amount,
                             source: widget.source,
                             destination: widget.destinationAccountIdentifier,
-                          ));
+                          ),
+                          context);
                     },
                     fields: [amountField],
                   ))

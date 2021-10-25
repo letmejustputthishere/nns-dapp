@@ -75,12 +75,14 @@ class NeuronHotkeysCard extends StatelessWidget {
                   OverlayBaseWidget.show(
                       context,
                       WizardOverlay(
-                          rootTitle: "HotKey",
-                          rootWidget: AddHotkeys(
-                              neuron: neuron,
-                              onCompleteAction: (context) {
-                                OverlayBaseWidget.of(context)?.dismiss();
-                              })));
+                        rootTitle: "HotKey",
+                        rootWidget: AddHotkeys(
+                            neuron: neuron,
+                            onCompleteAction: (context) {
+                              OverlayBaseWidget.of(context)?.dismiss();
+                            }),
+                        buildContext: context,
+                      ));
                 }.takeIf((e) => context.icApi.isNeuronControllable(neuron)),
                 child: Padding(
                   padding: const EdgeInsets.all(12.0),

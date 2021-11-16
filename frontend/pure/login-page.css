@@ -1,0 +1,25 @@
+login-page {
+    background-color: #383c3c;
+    width: 100%;
+    height: 100%;
+    display: block;
+    color: white;
+}
+login-page > * {
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+}
+login-page nav-button {
+    width: 200px;
+    height: 80px;
+    line-height: 80px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: #52545a;
+    border: var(--widget-border);
+    border-radius: var(--widget-border-radius);
+    font-size: 30px;
+    color: #aeb7b7;
+}

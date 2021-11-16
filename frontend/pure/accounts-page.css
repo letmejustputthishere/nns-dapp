@@ -1,0 +1,59 @@
+accounts-page > .body-panel {
+  display: block;
+  height: calc(100% - 100px);
+  max-width: 500px;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+accounts-page .accounts-header {
+  display: grid;
+  grid-template-columns: 300px auto;
+}
+
+accounts-page .accounts-header >* {
+  font-size: 32px;
+  font-weight: bold;
+}
+accounts-page .icp {
+  text-align: right;
+  position: relative;
+}
+accounts-page .icp::after {
+  content: "ICP";
+  position: absolute;
+  top: 3ex;
+  right: 0px;
+  font-size: smaller;
+  color: var(--text-grey);
+}
+
+accounts-page .account {
+  display: grid;
+  grid-template-columns: 300px auto;
+  box-shadow: 2px 2px 5px 1px #777;
+  border-width: var(--widget-border-width);
+  border-radius: var(--widget-border-radius);
+  min-height: 10ex;
+  padding: 20px;
+}
+
+accounts-page .accounts-button-bar {
+  position: absolute;
+  width: 100%;
+  bottom: 1ex;
+  height: 10ex;
+  display: flex;
+  justify-content: space-around;
+}
+accounts-page .accounts-button-bar button {
+  background-color: var(--button-blue);
+  border-width: var(--widget-border-width);
+  border-radius: var(--widget-border-radius-small);
+  border: none;
+  color: white;
+  width: 30%;
+  height: 60px;
+  font-size: 24px;
+}

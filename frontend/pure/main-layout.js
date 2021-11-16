@@ -40,6 +40,8 @@ class MainLayout extends HTMLElement {
       </div>
     `: `<login-page></login-page>`;
 
+
+    // Fancy sliding action of the navigation button background.
     let container = this.querySelector('.content');
     if (container) {
         let nav_bar = this.querySelector('.nav-bar');
@@ -63,13 +65,6 @@ class MainLayout extends HTMLElement {
     } else {
        document.getElementById(target).scrollIntoView();
     }
-  }
-
-  /**
-   * Fancy sliding action of the button background.
-   */
-  slide_tab() {
-    container.scrollLeft / (container.scrollWidth - container.clientWidth)
   }
 }
 

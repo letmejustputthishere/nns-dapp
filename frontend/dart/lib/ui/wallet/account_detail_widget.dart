@@ -27,7 +27,7 @@ class _AccountDetailPageState extends State<AccountDetailPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Account"),
+        title: Text("Account", style: context.textTheme.headline3),
         backgroundColor: AppColors.background,
         actions: [
           if (widget.account.subAccountId != null)
@@ -108,7 +108,7 @@ class _AccountDetailPageState extends State<AccountDetailPage> {
                                           child: SelectableText(
                                               account.accountIdentifier,
                                               style:
-                                                  context.textTheme.bodyText2),
+                                                  context.textTheme.bodyText1),
                                         ),
                                         IconButton(
                                             constraints: BoxConstraints.tight(

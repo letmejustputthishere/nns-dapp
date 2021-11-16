@@ -307,10 +307,10 @@ class ProposalRow extends StatelessWidget {
                                 context, NeuronInfoWidget(proposal.proposer));
                           },
                           child: Text("Proposer: ${proposal.proposer}",
-                              style: context.textTheme.bodyText2)),
+                              style: context.textTheme.bodyText1)),
                       Text(
                         "Id: ${proposal.id}",
-                        style: context.textTheme.bodyText2,
+                        style: context.textTheme.bodyText1,
                       ),
                     ],
                   ),

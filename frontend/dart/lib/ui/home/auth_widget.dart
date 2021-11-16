@@ -34,7 +34,7 @@ class AuthWidget extends StatelessWidget {
                           padding: const EdgeInsets.all(32.0),
                           child: Text(
                             "Login",
-                            style: context.textTheme.bodyText2
+                            style: context.textTheme.bodyText1
                                 ?.copyWith(fontSize: 32),
                           ),
                         ),

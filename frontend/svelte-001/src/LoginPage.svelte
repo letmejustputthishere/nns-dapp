@@ -25,9 +25,9 @@ button {
 }
 </style>
 
-
+<div>
        <h1>The Internet Computer</h1>
        <h2>Network Nervous System</h2>
        <button on:click={logIn}>Login</button>
        <span>Beta</span>
-
+</div>

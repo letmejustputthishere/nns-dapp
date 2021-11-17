@@ -1,9 +1,7 @@
-<style>
-:root {
-  background-color: black;
-}
-</style>
+<div>Canisters page</div>
 
-<div>
-Canisters page
-</div>
+<style>
+  :root {
+    background-color: black;
+  }
+</style>

@@ -1,16 +1,24 @@
 <script lang="ts">
-	export let loggedIn = false;
-        function logIn() {
-                loggedIn = true;
-        }
+  export let loggedIn = false;
+  function logIn() {
+    loggedIn = true;
+  }
 </script>
+
+<div>
+  <h1>The Internet Computer</h1>
+  <h2>Network Nervous System</h2>
+  <button on:click={logIn}>Login</button>
+  <span>Beta</span>
+</div>
+
 <style>
-login-page > * {
+  login-page > * {
     text-align: center;
     margin-left: auto;
     margin-right: auto;
-}
-button {
+  }
+  button {
     width: 200px;
     height: 80px;
     line-height: 80px;
@@ -22,12 +30,5 @@ button {
     border-radius: var(--widget-border-radius);
     font-size: 30px;
     color: #aeb7b7;
-}
+  }
 </style>
-
-<div>
-       <h1>The Internet Computer</h1>
-       <h2>Network Nervous System</h2>
-       <button on:click={logIn}>Login</button>
-       <span>Beta</span>
-</div>

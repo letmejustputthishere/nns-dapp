@@ -1,9 +1,7 @@
-<style>
-:root {
-  background-color: green;
-}
-</style>
+<div>Neurons page</div>
 
-<div>
-Neurons page
-</div>
+<style>
+  :root {
+    background-color: green;
+  }
+</style>

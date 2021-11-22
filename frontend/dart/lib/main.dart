@@ -52,6 +52,7 @@ class NnsDapp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: HiveBoxesWidget(
         boxes: hiveBoxes,
         child: ICApiManager(
@@ -59,9 +60,8 @@ class NnsDapp extends StatelessWidget {
             return MaterialApp.router(
               builder: (context, child) {
                 return Theme(
-                  data: getTheme(Responsive.isMobile(context)),
-                  child: child!
-                );
+                    data: getTheme(Responsive.isMobile(context)),
+                    child: child!);
               },
               debugShowCheckedModeBanner: false,
               routerDelegate: router,
@@ -91,31 +91,30 @@ class NnsDapp extends StatelessWidget {
       }),
       textTheme: nnsDappTextTheme(isMobile),
       elevatedButtonTheme: ElevatedButtonThemeData(
-        style: ButtonStyle(
-          shape: MaterialStateProperty.all(RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10))),
-          backgroundColor: MaterialStateProperty.resolveWith((states) {
-            if (states.contains(MaterialState.disabled)) {
-              return AppColors.gray400;
-            } else {
-              return AppColors.blue600;
-            }
-          }),
-        )),
+          style: ButtonStyle(
+        shape: MaterialStateProperty.all(
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
+        backgroundColor: MaterialStateProperty.resolveWith((states) {
+          if (states.contains(MaterialState.disabled)) {
+            return AppColors.gray400;
+          } else {
+            return AppColors.blue600;
+          }
+        }),
+      )),
       textButtonTheme: TextButtonThemeData(
-        style: ButtonStyle(
-          textStyle: MaterialStateProperty.all(
-            TextStyle(color: Colors.white)),
-          overlayColor: MaterialStateProperty.all(
-            AppColors.gray400.withOpacity(0.04)))),
+          style: ButtonStyle(
+              textStyle:
+                  MaterialStateProperty.all(TextStyle(color: Colors.white)),
+              overlayColor: MaterialStateProperty.all(
+                  AppColors.gray400.withOpacity(0.04)))),
       cardTheme: CardTheme(
-        color: AppColors.background,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20)),
-        shadowColor: Colors.white.withOpacity(0.3),
-        elevation: 7,
-        margin: EdgeInsets.only(
-          left: 20, right: 20, top: 20, bottom: 0)),
+          color: AppColors.background,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          shadowColor: Colors.white.withOpacity(0.3),
+          elevation: 7,
+          margin: EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 0)),
     );
   }
 }

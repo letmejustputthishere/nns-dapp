@@ -3,9 +3,9 @@
   import { AuthClient } from "@dfinity/auth-client"
   import dfinityLogo from "./assets/dfinity.svg"
 
-  let signedIn = false
   let client
-  let principal = ""
+  export let signedIn = false
+  export let principal = ""
 
   const initAuth = async () => {
     client = await AuthClient.create()

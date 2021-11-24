@@ -5,22 +5,28 @@
   import VotingPage from "./VotingPage.svelte"
   import CanistersPage from "./CanistersPage.svelte"
 
-  let loggedIn = false
+  // Identity, shared with all tabs:
+  let signedIn;
+  let principal;
 
+  /**
+   * Navigates to a part of this page.
+   */
   function go(target) {
-    if (target === "loginPage") {
-      loggedIn = false
-    }
+    document.getElementById(target).scrollIntoView();
   }
 
-  // Nav bar slider
+  // Navigation bar controls:
   let carousel
   let nav_bar
   let nav_background
   const num_elements = 4 // Number of tabs.
-  $: cssVarStyles = `--nav-background-width:${Math.round(100 / num_elements)}%`
-  // nav_background.style.width = `${Math.round(100/num_elements)}%`;
-  function onCarouselSwipe(e) {
+  // This can be used but is compiled to an inline style element, which is bad for content security.
+  // $: cssVarStyles = `--nav-background-width:${Math.round(100 / num_elements)}%`
+  /**
+   * Moves the nav bar background in response to swiping actions.
+   */
+  function onCarouselSwipe() {
     nav_background.style.left = `calc(${getComputedStyle(nav_bar).width} * ${
       (((num_elements - 1) / num_elements) * carousel.scrollLeft) /
       (carousel.scrollWidth - carousel.clientWidth)
@@ -32,7 +38,7 @@
   <!-- This is just a default; need to examine the CSP carefully and lock down accordingly. -->
   <meta
     http-equiv="Content-Security-Policy"
-    content="default-src 'self'; img-src https://*; child-src 'none';"
+    content="default-src 'self'; child-src 'none';"
   />
 </svelte:head>
 
@@ -40,7 +46,7 @@
   <div class="header-bar">
     <h1 class="title">NETWORK NERVOUS SYSTEM</h1>
   </div>
-  <Auth />
+  <Auth bind:signedIn={signedIn} bind:principal={principal} />
   <div class="nav-bar" bind:this={nav_bar}>
     <div class="background" bind:this={nav_background} />
     <div on:click={() => go("AccountsPage")}>ICP</div>

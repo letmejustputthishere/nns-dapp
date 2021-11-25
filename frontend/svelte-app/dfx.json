@@ -21,6 +21,12 @@
       "bind": "127.0.0.1:4943",
       "type": "ephemeral"
     },
+    "testnet": {
+      "providers": [
+        "http://[2a00:fb01:400:42:5000:e8ff:feee:ac2a]:8080"
+      ],
+      "type": "persistent"
+    },
     "ic": {
       "providers": [
         "https://mainnet.dfinity.network"

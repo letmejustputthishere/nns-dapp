@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "serve": "vite preview"
+    "serve": "vite preview",
+    "format": "prettier --write --plugin-search-dir=. ./**/*.html ./**/*.svelte ./**/*.ts"
   },
   "dependencies": {
     "@dfinity/agent": "0.10.0",
@@ -16,6 +17,8 @@
     "@dfinity/identity": "0.10.0"
   },
   "devDependencies": {
+    "prettier": "^2.4.1",
+    "prettier-plugin-svelte": "^2.5.0",
     "@sveltejs/vite-plugin-svelte": "next",
     "buffer": "^6.0.3",
     "svelte": "^3.42.5",

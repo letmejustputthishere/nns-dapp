@@ -1,45 +1,45 @@
 <script lang="ts">
-  import { onMount } from "svelte"
-  import { AuthClient } from "@dfinity/auth-client"
+  import { onMount } from "svelte";
+  import { AuthClient } from "@dfinity/auth-client";
 
-  let client
-  export let signedIn = false
-  export let principal = ""
+  let client;
+  export let signedIn = false;
+  export let principal = "";
 
   const initAuth = async () => {
-    client = await AuthClient.create()
-    const isAuthenticated = await client.isAuthenticated()
+    client = await AuthClient.create();
+    const isAuthenticated = await client.isAuthenticated();
 
     if (isAuthenticated) {
-      const identity = client.getIdentity()
-      principal = identity.getPrincipal().toString()
-      signedIn = true
+      const identity = client.getIdentity();
+      principal = identity.getPrincipal().toString();
+      signedIn = true;
     }
-  }
+  };
 
   const signIn = async () => {
     const result = await new Promise((resolve, reject) => {
       client.login({
         identityProvider: "https://identity.ic0.app",
         onSuccess: () => {
-          const identity = client.getIdentity()
-          const principal = identity.getPrincipal().toString()
-          resolve({ identity, principal })
+          const identity = client.getIdentity();
+          const principal = identity.getPrincipal().toString();
+          resolve({ identity, principal });
         },
         onError: reject,
-      })
-    })
-    principal = result.principal
-    signedIn = true
-  }
+      });
+    });
+    principal = result.principal;
+    signedIn = true;
+  };
 
   const signOut = async () => {
-    await client.logout()
-    signedIn = false
-    principal = ""
-  }
+    await client.logout();
+    signedIn = false;
+    principal = "";
+  };
 
-  onMount(initAuth)
+  onMount(initAuth);
 </script>
 
 <div class="auth-expandable">

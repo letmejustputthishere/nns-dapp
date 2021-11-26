@@ -1,10 +1,10 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
-  import Auth from "./Auth.svelte"
-  import AccountsPage from "./AccountsPage.svelte"
-  import NeuronsPage from "./NeuronsPage.svelte"
-  import VotingPage from "./VotingPage.svelte"
-  import CanistersPage from "./CanistersPage.svelte"
+  import { onMount } from "svelte";
+  import Auth from "./Auth.svelte";
+  import AccountsPage from "./AccountsPage.svelte";
+  import NeuronsPage from "./NeuronsPage.svelte";
+  import VotingPage from "./VotingPage.svelte";
+  import CanistersPage from "./CanistersPage.svelte";
 
   // Identity, shared with all tabs:
   let signedIn;
@@ -21,25 +21,26 @@
   onMount(async () => {
     let target = window.location.hash.slice(1);
     if (target) {
-        go(target);
+      go(target);
     }
   });
 
   // Navigation bar controls:
-  let carousel
-  let nav_bar
-  let nav_background
-  const num_elements = 4 // Number of tabs.
+  let carousel;
+  let nav_bar;
+  let nav_background;
+  const num_elements = 4; // Number of tabs.
   // This can be used but is compiled to an inline style element, which is bad for content security.
   // $: cssVarStyles = `--nav-background-width:${Math.round(100 / num_elements)}%`
   /**
    * Moves the nav bar background in response to swiping actions.
    */
   function onCarouselSwipe() {
-    let carouselRatio = carousel.scrollLeft / (carousel.scrollWidth - carousel.clientWidth);
+    let carouselRatio =
+      carousel.scrollLeft / (carousel.scrollWidth - carousel.clientWidth);
     nav_background.style.left = `calc(${getComputedStyle(nav_bar).width} * ${
-      (((num_elements - 1) / num_elements) * carouselRatio)
-    })`
+      ((num_elements - 1) / num_elements) * carouselRatio
+    })`;
   }
 </script>
 
@@ -55,7 +56,7 @@
   <div class="header-bar">
     <h1 class="title">NETWORK NERVOUS SYSTEM</h1>
   </div>
-  <Auth bind:signedIn={signedIn} bind:principal={principal} />
+  <Auth bind:signedIn bind:principal />
   <div class="nav-bar" bind:this={nav_bar}>
     <div class="background" bind:this={nav_background} />
     <div on:click={() => go("AccountsPage")}>ICP</div>
@@ -82,7 +83,7 @@
     --button-blue: #005fb7;
   }
 
-  body {
+  :global(body) {
     margin: 0;
     padding: 0;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
@@ -112,10 +113,6 @@
     font-size: 24px;
     letter-spacing: 2px;
     margin: 0;
-  }
-
-  button {
-    font-weight: 600;
   }
 
   .App {

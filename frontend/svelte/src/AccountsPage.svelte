@@ -11,9 +11,9 @@
   */
 </script>
 
-
-<div><p><b>Please use the legacy app for account management</b></p>
-     <p><a href="/#/accounts">Manage accounts here</a></p>
+<div>
+  <p><b>Please use the legacy app for account management</b></p>
+  <p><a href="/#/accounts">Manage accounts here</a></p>
 </div>
 
 <style>

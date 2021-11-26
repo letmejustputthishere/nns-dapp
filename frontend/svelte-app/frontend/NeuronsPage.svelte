@@ -1,5 +1,5 @@
 <div><p><b>Please use the legacy app for neuron management</b></p>
-     <p><a href="/#NeuronsPage">Manage neurons here</a></p>
+     <p><a href="/#/neurons">Manage neurons here</a></p>
 </div>
 
 <style>

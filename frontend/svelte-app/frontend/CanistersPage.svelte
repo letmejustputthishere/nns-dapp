@@ -1,5 +1,5 @@
 <div><p><b>Please use the legacy app for canister management</b></p>
-     <p><a href="/#CanistersPage">Manage canisters here</a></p>
+     <p><a href="/#/canisters">Manage canisters here</a></p>
 </div>
 
 <style>

@@ -1,5 +1,5 @@
 <div><p><b>Please use the legacy app for voting</b></p>
-     <p><a href="/#VotingPage">Vote here</a></p>
+     <p><a href="/#/proposals">Vote here</a></p>
 </div>
 
 <style>

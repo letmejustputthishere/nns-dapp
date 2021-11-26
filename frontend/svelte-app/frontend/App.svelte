@@ -19,8 +19,10 @@
   }
 
   onMount(async () => {
-    console.log("onMount");
-    go(window.location.hash.slice(1));
+    let target = window.location.hash.slice(1);
+    if (target) {
+        go(target);
+    }
   });
 
   // Navigation bar controls:

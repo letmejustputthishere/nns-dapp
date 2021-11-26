@@ -5,6 +5,7 @@
   let client;
   export let signedIn = false;
   export let principal = "";
+  let identityProvider = import.meta.env.VITE_IDENTITY_PROVIDER; // Replaced at compile time
 
   const initAuth = async () => {
     client = await AuthClient.create();
@@ -20,7 +21,7 @@
   const signIn = async () => {
     const result = await new Promise((resolve, reject) => {
       client.login({
-        identityProvider: "https://identity.ic0.app",
+        identityProvider,
         onSuccess: () => {
           const identity = client.getIdentity();
           const principal = identity.getPrincipal().toString();
@@ -50,7 +51,7 @@
       <h2>Network Nervous System</h2>
       <div />
       <button on:click={signIn} class="auth-button">Login</button>
-      <span>Beta</span>
+      <span>{import.meta.env.PROD?"":import.meta.env.MODE} Beta</span>
     </div>
   {/if}
 

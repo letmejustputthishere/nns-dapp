@@ -28,15 +28,13 @@ rm -fr web-assets
 cp -R frontend/dart/build/web/ web-assets
 
 # Build the svelte app
-SVELTE_APP_DIR=frontend/svelte-app
+SVELTE_APP_DIR=frontend/svelte
 pushd "$SVELTE_APP_DIR" || exit
   npm run build
 popd || exit
 
 rm -fr web-assets/v2
 cp -R "$SVELTE_APP_DIR"/dist web-assets/v2
-sed -E 's?(href|src)="?&/v2?g' "$SVELTE_APP_DIR"/dist/index.html > web-assets/v2/index.html
-
 
 # Bundle into a tight tarball
 # On macOS you need to install gtar + xz

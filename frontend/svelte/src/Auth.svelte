@@ -2,10 +2,10 @@
   import { onMount } from "svelte";
   import { AuthClient } from "@dfinity/auth-client";
 
-  let client;
-  export let signedIn = false;
-  export let principal = "";
-  let identityProvider = import.meta.env.VITE_IDENTITY_PROVIDER; // Replaced at compile time
+  let client: AuthClient;
+  export let signedIn: boolean = false;
+  export let principal: string = "";
+  let identityProvider: string = String(import.meta.env.VITE_IDENTITY_PROVIDER || "identity.ic0.app"); // Replaced at compile time
 
   const initAuth = async () => {
     client = await AuthClient.create();
@@ -19,18 +19,17 @@
   };
 
   const signIn = async () => {
-    const result = await new Promise((resolve, reject) => {
+    await new Promise((resolve, reject) => {
       client.login({
         identityProvider,
         onSuccess: () => {
-          const identity = client.getIdentity();
-          const principal = identity.getPrincipal().toString();
-          resolve({ identity, principal });
+          resolve(null);
         },
         onError: reject,
       });
     });
-    principal = result.principal;
+    const identity = client.getIdentity();
+    principal = identity.getPrincipal().toString();
     signedIn = true;
   };
 

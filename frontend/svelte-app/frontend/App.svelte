@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { onMount } from 'svelte';
   import Auth from "./Auth.svelte"
   import AccountsPage from "./AccountsPage.svelte"
   import NeuronsPage from "./NeuronsPage.svelte"
@@ -13,12 +14,14 @@
    * Navigates to a part of this page.
    */
   function go(target) {
+    window.location.hash = target;
     document.getElementById(target).scrollIntoView();
   }
 
-  function onMount() {
+  onMount(async () => {
+    console.log("onMount");
     go(window.location.hash.slice(1));
-  }
+  });
 
   // Navigation bar controls:
   let carousel
@@ -31,9 +34,9 @@
    * Moves the nav bar background in response to swiping actions.
    */
   function onCarouselSwipe() {
+    let carouselRatio = carousel.scrollLeft / (carousel.scrollWidth - carousel.clientWidth);
     nav_background.style.left = `calc(${getComputedStyle(nav_bar).width} * ${
-      (((num_elements - 1) / num_elements) * carousel.scrollLeft) /
-      (carousel.scrollWidth - carousel.clientWidth)
+      (((num_elements - 1) / num_elements) * carouselRatio)
     })`
   }
 </script>
@@ -86,6 +89,7 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     color: white;
+    background-color: black;
   }
 
   .header-bar {
@@ -129,6 +133,7 @@
     margin-top: auto;
     margin-bottom: auto;
     z-index: 1;
+    width: 200px;
   }
   .nav-bar > .background {
     height: 100%;

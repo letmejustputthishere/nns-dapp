@@ -11,10 +11,21 @@
 </script>
 
 
-<div>Accounts page</div>
+<div><p><b>Please use the legacy app for account management</b></p>
+     <p><a href="/#AccountsPage">Manage accounts here</a></p>
+</div>
 
 <style>
-  :root {
-    background-color: red;
+  div {
+    margin-left: auto;
+    margin-right: auto;
+  }
+  p {
+    text-align: center;
+  }
+  a {
+    color: white;
+    font-weight: bold;
+    font-size: large;
   }
 </style>

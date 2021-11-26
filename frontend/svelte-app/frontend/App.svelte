@@ -16,6 +16,10 @@
     document.getElementById(target).scrollIntoView();
   }
 
+  function onMount() {
+    go(window.location.hash.slice(1));
+  }
+
   // Navigation bar controls:
   let carousel
   let nav_bar

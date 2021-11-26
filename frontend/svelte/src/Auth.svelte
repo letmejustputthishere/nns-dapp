@@ -2,10 +2,10 @@
   import { onMount } from "svelte";
   import { AuthClient } from "@dfinity/auth-client";
 
-  let client: AuthClient;
-  export let signedIn: boolean = false;
-  export let principal: string = "";
-  let identityProvider: string = String(import.meta.env.VITE_IDENTITY_PROVIDER || "identity.ic0.app"); // Replaced at compile time
+  let client;
+  export let signedIn = false;
+  export let principal = "";
+  let identityProvider = String(import.meta.env.VITE_IDENTITY_PROVIDER || "identity.ic0.app"); // Replaced at compile time
 
   const initAuth = async () => {
     client = await AuthClient.create();

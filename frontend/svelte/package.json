@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "export IDENTITY_PROVIDER='https://qjdve-lqaaa-aaaaa-aaaeq-cai.nnsdapp.dfinity.network/' && vite",
-    "build": "npm run build:prod",
+    "dev": "vite",
+    "build": "npm run build:mainnet",
     "build:mainnet": "tsc && vite build",
-    "build:testnet": "export IDENTITY_PROVIDER='https://qjdve-lqaaa-aaaaa-aaaeq-cai.nnsdapp.dfinity.network/' && tsc && vite build",
+    "build:testnet": "tsc && vite build -m development",
     "check": "npm run check:svelte",
     "check:svelte": "svelte-check --tsconfig ./tsconfig.json",
     "serve": "vite preview",

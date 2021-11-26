@@ -7,13 +7,13 @@
   import CanistersPage from "./CanistersPage.svelte";
 
   // Identity, shared with all tabs:
-  let signedIn: boolean;
-  let principal: string;
+  let signedIn;
+  let principal;
 
   /**
    * Navigates to a part of this page.
    */
-  function go(target: string) {
+  function go(target) {
     window.location.hash = target;
     document.getElementById(target).scrollIntoView();
   }
@@ -26,9 +26,9 @@
   });
 
   // Navigation bar controls:
-  let carousel: HTMLElement;
-  let nav_bar: HTMLElement;
-  let nav_background: HTMLElement;
+  let carousel;
+  let nav_bar;
+  let nav_background;
   const num_elements = 4; // Number of tabs.
   // This can be used but is compiled to an inline style element, which is bad for content security.
   // $: cssVarStyles = `--nav-background-width:${Math.round(100 / num_elements)}%`

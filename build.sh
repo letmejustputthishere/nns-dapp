@@ -30,7 +30,7 @@ cp -R frontend/dart/build/web/ web-assets
 # Build the svelte app
 SVELTE_APP_DIR=frontend/svelte
 pushd "$SVELTE_APP_DIR" || exit
-  npm run build
+  npm run "build:${DEPLOY_ENV}"
 popd || exit
 
 rm -fr web-assets/v2

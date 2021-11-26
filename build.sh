@@ -28,7 +28,14 @@ rm -fr web-assets
 cp -R frontend/dart/build/web/ web-assets
 
 # Build the svelte app
-cp -R frontend/svelte-app/dist/ web-assets/v2
+SVELTE_APP_DIR=frontend/svelte-app
+pushd "$SVELTE_APP_DIR" || exit
+  npm run build
+popd || exit
+
+rm -fr web-assets/v2
+cp -R "$SVELTE_APP_DIR"/dist web-assets/v2
+sed -E 's?(href|src)="?&/v2?g' "$SVELTE_APP_DIR"/dist/index.html > web-assets/v2/index.html
 
 
 # Bundle into a tight tarball
@@ -41,7 +48,6 @@ cp -R frontend/svelte-app/dist/ web-assets/v2
 pushd web-assets || exit
   # Remove the assets/NOTICES file, as it's large in size and not used.
   rm assets/NOTICES
-  mkdir -p v2 && echo hi > v2/hi
   tar cJv --mtime='2021-05-07 17:00+00' --sort=name --exclude .last_build_id -f ../assets.tar.xz . || \
   gtar cJv --mtime='2021-05-07 17:00+00' --sort=name --exclude .last_build_id -f ../assets.tar.xz .
 popd || exit

@@ -1,35 +1,32 @@
 {
-  "name": "ic-nns-svelte",
+  "name": "svelte-app",
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "vite",
-    "build": "npm run build:mainnet",
-    "build:mainnet": "tsc && vite build",
-    "build:testnet": "tsc && vite build -m development",
-    "check": "npm run check:svelte",
-    "check:svelte": "svelte-check --tsconfig ./tsconfig.json",
-    "serve": "vite preview",
-    "format": "prettier --write --plugin-search-dir=. ./**/*.html ./**/*.svelte ./**/*.ts"
-  },
-  "dependencies": {
-    "@dfinity/agent": "0.10.0",
-    "@dfinity/auth-client": "0.10.0",
-    "@dfinity/authentication": "0.10.0",
-    "@dfinity/candid": "0.10.0",
-    "@dfinity/identity": "0.10.0",
-    "@dfinity/principal": "0.10.0"
+    "build": "rollup -c",
+    "dev": "rollup -c -w",
+    "start": "sirv public --no-clear",
+    "check": "svelte-check --tsconfig ./tsconfig.json"
   },
   "devDependencies": {
-    "@rollup/plugin-replace": "^3.0.0",
-    "@sveltejs/vite-plugin-svelte": "next",
-    "buffer": "^6.0.3",
-    "prettier": "^2.4.1",
-    "prettier-plugin-svelte": "^2.5.0",
-    "svelte": "^3.42.5",
-    "svelte-check": "^2.2.10",
-    "svelte-preprocess": "^4.9.4",
-    "typescript": "^4.4.3",
-    "vite": "^2.5.7"
+    "@dfinity/nns": "file:../../../../../nns-js",
+    "@rollup/plugin-commonjs": "^17.0.0",
+    "@rollup/plugin-node-resolve": "^11.0.0",
+    "@rollup/plugin-typescript": "^8.0.0",
+    "@tsconfig/svelte": "^2.0.0",
+    "rollup": "^2.3.4",
+    "rollup-plugin-css-only": "^3.1.0",
+    "rollup-plugin-inject": "^3.0.2",
+    "rollup-plugin-livereload": "^2.0.0",
+    "rollup-plugin-svelte": "^7.0.0",
+    "rollup-plugin-terser": "^7.0.0",
+    "svelte": "^3.0.0",
+    "svelte-check": "^2.0.0",
+    "svelte-preprocess": "^4.0.0",
+    "tslib": "^2.0.0",
+    "typescript": "^4.0.0"
+  },
+  "dependencies": {
+    "sirv-cli": "^1.0.0"
   }
 }

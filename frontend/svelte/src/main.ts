@@ -1,10 +1,10 @@
 import { AccountIdentifier } from "@dfinity/nns";
+import { AuthClient } from "@dfinity/auth-client";
 import App from './App.svelte';
 
 const app = new App({
 	target: document.body,
 	props: {
-		name: 'world'
 	}
 });
 

@@ -6,6 +6,7 @@ import { terser } from 'rollup-plugin-terser';
 import sveltePreprocess from 'svelte-preprocess';
 import typescript from '@rollup/plugin-typescript';
 import css from 'rollup-plugin-css-only';
+import json from "@rollup/plugin-json";
 import inject from "@rollup/plugin-inject";
 
 const production = !process.env.ROLLUP_WATCH;
@@ -66,11 +67,10 @@ export default {
 			sourceMap: !production,
 			inlineSources: !production
 		}),
-
-            inject({
-                Buffer: ["buffer", "Buffer"],
-                // process: "process/browser",
-            }),
+    inject({
+      Buffer: ["buffer", "Buffer"],
+    }),
+    json(),
 
 		// In dev mode, call `npm run start` once
 		// the bundle has been generated

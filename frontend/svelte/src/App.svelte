@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  //import Auth from "./Auth.svelte";
+  import Auth from "./Auth.svelte";
   //import AccountsPage from "./AccountsPage.svelte";
   //import NeuronsPage from "./NeuronsPage.svelte";
   //import VotingPage from "./VotingPage.svelte";
@@ -56,6 +56,7 @@
   <div class="header-bar">
     <h1 class="title">NETWORK NERVOUS SYSTEM</h1>
   </div>
+  <Auth bind:signedIn bind:principal />
   <div class="nav-bar" bind:this={nav_bar}>
     <div class="background" bind:this={nav_background} />
     <div on:click={() => go("AccountsPage")}>ICP</div>

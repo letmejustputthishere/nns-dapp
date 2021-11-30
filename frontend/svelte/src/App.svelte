@@ -1,10 +1,10 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import Auth from "./Auth.svelte";
-  //import AccountsPage from "./AccountsPage.svelte";
-  //import NeuronsPage from "./NeuronsPage.svelte";
-  //import VotingPage from "./VotingPage.svelte";
-  //import CanistersPage from "./CanistersPage.svelte";
+  import AccountsPage from "./AccountsPage.svelte";
+  import NeuronsPage from "./NeuronsPage.svelte";
+  import VotingPage from "./VotingPage.svelte";
+  import CanistersPage from "./CanistersPage.svelte";
 
   // Identity, shared with all tabs:
   let signedIn;
@@ -65,10 +65,10 @@
     <div on:click={() => go("CanistersPage")}>CANISTERS</div>
   </div>
   <div class="content" bind:this={carousel} on:scroll={onCarouselSwipe}>
-    <div id="AccountsPage">AccountsPage</div>
-    <div id="NeuronsPage">NeuronsPage</div>
-    <div id="VotingPage">VotingPage</div>
-    <div id="CanistersPage">CanistersPage</div>
+    <div id="AccountsPage"><AccountsPage /></div>
+    <div id="NeuronsPage"><NeuronsPage /></div>
+    <div id="VotingPage"><VotingPage /></div>
+    <div id="CanistersPage"><CanistersPage /></div>
   </div>
 </div>
 

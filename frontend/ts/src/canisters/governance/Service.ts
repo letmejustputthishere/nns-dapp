@@ -41,10 +41,12 @@ import { submitUpdateRequest } from "../updateRequestHandler";
 import { ManageNeuronResponse as PbManageNeuronResponse } from "../../proto/governance_pb";
 import { Agent } from "@dfinity/agent";
 import { calculateCrc32 } from "../converter";
+import { ManageNeuron as PbManageNeuron } from "../../proto/governance_pb";
 import {
   ListNeurons as PbListNeurons,
   ListNeuronsResponse as PbListNeuronsResponse,
 } from "../../proto/governance_pb";
+import { NeuronId as PbNeuronId } from "../../proto/base_types_pb";
 
 export default class Service implements ServiceInterface {
   private readonly agent: Agent;
@@ -214,10 +216,23 @@ export default class Service implements ServiceInterface {
   public joinCommunityFund = async (
     request: JoinCommunityFundRequest
   ): Promise<EmptyResponse> => {
-    const rawRequest =
-      this.requestConverters.fromJoinCommunityFundRequest(request);
-    await this.service.manage_neuron(rawRequest);
-    return { Ok: null };
+    const configure = new PbManageNeuron.Configure();
+    configure.setJoinCommunityFund(new PbManageNeuron.JoinCommunityFund());
+
+    const req = new PbManageNeuron();
+    req.setConfigure(configure);
+    const neuronId = new PbNeuronId();
+    neuronId.setId(request.neuronId.toString());
+    req.setNeuronId(neuronId);
+
+    const rawResponse = await submitUpdateRequest(
+      this.agent,
+      this.canisterId,
+      "manage_neuron_pb",
+      req.serializeBinary()
+    );
+
+    return toResponse(PbManageNeuronResponse.deserializeBinary(rawResponse));
   };
 
   public follow = async (request: FollowRequest): Promise<EmptyResponse> => {
@@ -256,10 +271,10 @@ export default class Service implements ServiceInterface {
     return this.responseConverters.toSpawnResponse(response);
   };
 
-  public split = async (request: SplitRequest): Promise<EmptyResponse> => {
+  public split = async (request: SplitRequest): Promise<NeuronId> => {
     const rawRequest = this.requestConverters.fromSplitRequest(request);
-    await this.service.manage_neuron(rawRequest);
-    return { Ok: null };
+    const rawResponse = await this.service.manage_neuron(rawRequest);
+    return this.responseConverters.toSplitResponse(rawResponse);
   };
 
   public disburse = async (

@@ -20,7 +20,7 @@ abstract class AbstractPlatformICApi {
 
   Future<void> buildServices(dynamic identity);
 
-  Future<void> refreshAccounts();
+  Future<void> refreshAccounts({bool waitForFullSync = false});
 
   Future<void> acquireICPTs(
       {required String accountIdentifier, required BigInt doms});
@@ -48,6 +48,9 @@ abstract class AbstractPlatformICApi {
   Future<Result<Unit, Exception>> joinCommunityFund({required Neuron neuron});
 
   Future<Neuron> spawnNeuron({required Neuron neuron});
+
+  Future<Result<Unit, Exception>> splitNeuron(
+      {required Neuron neuron, required ICP amount});
 
   Future<void> follow(
       {required BigInt neuronId,

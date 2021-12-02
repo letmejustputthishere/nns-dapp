@@ -261,15 +261,16 @@ class PlatformICApi extends AbstractPlatformICApi {
   }
 
   @override
-  Future<Result<Unit, Exception>> joinCommunityFund({required Neuron neuron}) async {
+  Future<Result<Unit, Exception>> joinCommunityFund(
+      {required Neuron neuron}) async {
     try {
       final identity = (await this.getIdentityByNeuron(neuron)).unwrap();
 
       final res = await promiseToFuture(serviceApi!.joinCommunityFund(
-        identity,
-        JoinCommunityFundRequest(
-          neuronId: toJSBigInt(neuron.id.toString()),
-        )));
+          identity,
+          JoinCommunityFundRequest(
+            neuronId: toJSBigInt(neuron.id.toString()),
+          )));
 
       validateGovernanceResponse(res);
       await fetchNeuron(neuronId: neuron.id.toBigInt);
@@ -459,8 +460,8 @@ class PlatformICApi extends AbstractPlatformICApi {
   }
 
   @override
-  Future<void> refreshAccounts() async {
-    await accountsSyncService!.syncAll();
+  Future<void> refreshAccounts({bool waitForFullSync = false}) async {
+    await accountsSyncService!.syncAll(waitForFullSync: waitForFullSync);
   }
 
   @override
@@ -473,6 +474,25 @@ class PlatformICApi extends AbstractPlatformICApi {
     await neuronSyncService!.sync();
     return hiveBoxes.neurons.values
         .firstWhere((element) => element.identifier == createdNeuronId);
+  }
+
+  @override
+  Future<Result<Unit, Exception>> splitNeuron(
+      {required Neuron neuron, required ICP amount}) async {
+    try {
+      final identity = (await this.getIdentityByNeuron(neuron)).unwrap();
+
+      await promiseToFuture(serviceApi!.split(
+          identity,
+          SplitNeuronRequest(
+            neuronId: toJSBigInt(neuron.id.toString()),
+            amount: amount.asE8s().toJS,
+          )));
+      await refreshNeurons();
+      return Result.ok(unit);
+    } catch (err) {
+      return Result.err(Exception(err));
+    }
   }
 
   @override
@@ -627,7 +647,14 @@ class PlatformICApi extends AbstractPlatformICApi {
 
   @override
   String getPrincipal() {
-    return authApi.getPrincipal() ?? "null";
+    final principal = authApi.getPrincipal();
+    if (principal != null) {
+      return principal;
+    } else {
+      // We're not logged in. Redirect to the login page.
+      this.logout();
+      return "null";
+    }
   }
 
   @override

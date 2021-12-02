@@ -4,6 +4,7 @@ import { Buffer } from "buffer/";
 import {
   AddNodeOperatorPayload,
   AddNodesToSubnetPayload,
+  AddOrRemoveDataCentersProposalPayload,
   BlessReplicaVersionPayload,
   CreateSubnetPayload,
   RecoverSubnetPayload,
@@ -13,8 +14,10 @@ import {
   StopOrStartNnsCanisterProposalPayload,
   UpdateIcpXdrConversionRatePayload,
   UpdateNodeOperatorConfigPayload,
+  UpdateNodeRewardsTableProposalPayload,
   UpdateSubnetPayload,
   UpdateSubnetReplicaVersionPayload,
+  UpdateUnassignedNodesConfigPayload,
 } from "./payloads";
 
 export const getNnsFunctionName = (nnsFunction: number): string => {
@@ -57,6 +60,12 @@ export const getNnsFunctionName = (nnsFunction: number): string => {
       return "Remove nodes from registry";
     case 19:
       return "Uninstall code from canister";
+    case 20:
+      return "Update the node rewards table";
+    case 21:
+      return "Add or remove data centers";
+    case 22:
+      return "Update unassigned nodes config";
     default:
       return "--Unknown--";
   }
@@ -131,6 +140,21 @@ export const convertNnsFunctionPayload = (
           buffer
         )[0] as JsonObject;
       // case 19: return "Uninstall code from canister";
+      case 20:
+        return IDL.decode(
+          [UpdateNodeRewardsTableProposalPayload],
+          buffer
+        )[0] as JsonObject;
+      case 21:
+        return IDL.decode(
+          [AddOrRemoveDataCentersProposalPayload],
+          buffer
+        )[0] as JsonObject;
+      case 22:
+        return IDL.decode(
+          [UpdateUnassignedNodesConfigPayload],
+          buffer
+        )[0] as JsonObject;
       default:
         return null;
     }

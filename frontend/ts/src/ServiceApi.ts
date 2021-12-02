@@ -90,6 +90,7 @@ import { principalToAccountIdentifier } from "./canisters/converter";
 import { Principal } from "@dfinity/principal";
 import {
   addNodeToSubnetPayload,
+  updateSubnetConfigPayload,
   updateSubnetPayload,
 } from "./canisters/governance/nnsFunctions/samplePayloads";
 
@@ -341,8 +342,13 @@ export default class ServiceApi {
     );
   };
 
-  public split = (request: SplitRequest): Promise<EmptyResponse> => {
-    return executeWithLogging(() => this.governanceService.split(request));
+  public split = (
+    identity: Identity,
+    request: SplitRequest
+  ): Promise<NeuronId> => {
+    return executeWithLogging(async () =>
+      (await governanceService(identity)).split(request)
+    );
   };
 
   public disburse = (
@@ -555,6 +561,21 @@ export default class ServiceApi {
           summary: "Add node(s) to subnet 10",
           nnsFunction: 2,
           payload: addNodeToSubnetPayload,
+        });
+      console.log(manageNeuronResponse);
+    }
+
+    {
+      console.log("make an 'Update subnet config' proposal");
+      const manageNeuronResponse =
+        await this.governanceService.makeExecuteNnsFunctionProposal({
+          neuronId,
+          title: "Update configuration of subnet: tdb26-",
+          url: "",
+          summary:
+            "Update the NNS subnet tdb26-jop6k-aogll-7ltgs-eruif-6kk7m-qpktf-gdiqx-mxtrf-vb5e6-eqe in order to grant backup access to three backup pods operated by the DFINITY Foundation. The backup user has only read-only access to the recent blockchain artifacts.",
+          nnsFunction: 7,
+          payload: updateSubnetConfigPayload,
         });
       console.log(manageNeuronResponse);
     }

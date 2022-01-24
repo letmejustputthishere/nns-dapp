@@ -156,7 +156,7 @@ export default class Service implements ServiceInterface {
     let knownNeurons: KnownNeuron[] = [];
     try {
       knownNeurons = await this.nnsJsService.listKnownNeurons(certified);
-    } catch(e) {
+    } catch (e) {
       console.log("Unable to get known neurons from Governance canister", e);
     }
 

@@ -497,9 +497,10 @@ export default class RequestConverters {
           known_neuron_data: [
             {
               name: knownNeuron.name,
-              description: knownNeuron.description != undefined
-                ? [knownNeuron.description]
-                : [],
+              description:
+                knownNeuron.description != undefined
+                  ? [knownNeuron.description]
+                  : [],
             },
           ],
         },

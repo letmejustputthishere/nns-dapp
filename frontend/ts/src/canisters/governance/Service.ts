@@ -1,4 +1,5 @@
 import { Principal } from "@dfinity/principal";
+import { GovernanceCanister } from "@dfinity/nns";
 import { Option } from "../option";
 import { _SERVICE, ListNeurons } from "./rawService";
 import ServiceInterface, {
@@ -54,6 +55,7 @@ export default class Service implements ServiceInterface {
   private readonly canisterId: Principal;
   private readonly service: _SERVICE;
   private readonly certifiedService: _SERVICE;
+  private readonly nnsJsService: GovernanceCanister;
   private readonly myPrincipal: Principal;
   private readonly requestConverters: RequestConverters;
   private readonly responseConverters: ResponseConverters;
@@ -69,6 +71,7 @@ export default class Service implements ServiceInterface {
     this.canisterId = canisterId;
     this.service = service;
     this.certifiedService = certifiedService;
+    this.nnsJsService = GovernanceCanister.create({ agent });
     this.myPrincipal = myPrincipal;
     this.requestConverters = new RequestConverters(myPrincipal);
     this.responseConverters = new ResponseConverters();
@@ -150,15 +153,10 @@ export default class Service implements ServiceInterface {
   public listKnownNeurons = async (
     certified: boolean
   ): Promise<Array<KnownNeuron>> => {
-    const serviceToUse = certified ? this.certifiedService : this.service;
-
-    const knownNeurons: KnownNeuron[] = [];
+    let knownNeurons: KnownNeuron[] = [];
     try {
-      const rawResponse = await serviceToUse.list_known_neurons();
-      rawResponse.known_neurons
-        .map(this.responseConverters.toKnownNeuron)
-        .forEach((n) => knownNeurons.push(n));
-    } catch (e) {
+      knownNeurons = await this.nnsJsService.listKnownNeurons(certified);
+    } catch(e) {
       console.log("Unable to get known neurons from Governance canister", e);
     }
 
@@ -166,7 +164,7 @@ export default class Service implements ServiceInterface {
       knownNeurons.push({
         id: BigInt(27),
         name: "DFINITY Foundation",
-        description: "",
+        description: undefined,
       });
     }
 
@@ -174,7 +172,7 @@ export default class Service implements ServiceInterface {
       knownNeurons.push({
         id: BigInt(28),
         name: "Internet Computer Association",
-        description: "",
+        description: undefined,
       });
     }
 

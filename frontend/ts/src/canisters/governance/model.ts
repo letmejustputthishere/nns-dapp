@@ -7,7 +7,10 @@ import {
   NeuronId,
   PrincipalString,
 } from "../common/types";
+import { KnownNeuron } from "@dfinity/nns";
 import { Principal } from "@dfinity/principal";
+
+export { KnownNeuron };
 
 export type Action =
   | { RegisterKnownNeuron: KnownNeuron }
@@ -110,11 +113,6 @@ export interface GovernanceError {
 }
 export interface IncreaseDissolveDelay {
   additionalDissolveDelaySeconds: number;
-}
-export interface KnownNeuron {
-  id: NeuronId;
-  name: string;
-  description: string;
 }
 export interface SetDissolveTimestamp {
   dissolveTimestampSeconds: bigint;

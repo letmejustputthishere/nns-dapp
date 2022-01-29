@@ -2,6 +2,8 @@
 assets.tar.xz
 out
 build-inputs.txt
+,*
+.dockerignore
 
 # Miscellaneous
 *.class

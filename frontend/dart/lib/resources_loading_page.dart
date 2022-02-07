@@ -13,45 +13,45 @@ class ResourcesLoadingPageConfig extends PageConfig {
 
   @override
   Widget createWidget() {
-    return LandingPageWidget();
+    return ResourcesLoadingWidget(destinationPage: destinationPage);
   }
 }
 
-// class ResourcesLoadingWidget extends StatefulWidget {
-//   final Future<PageConfig> destinationPage;
-//   final Future<bool> hasValidAuthToken;
-//
-//   const ResourcesLoadingWidget({Key? key, required this.destinationPage, required this.hasValidAuthToken})
-//       : super(key: key);
-//
-//   @override
-//   _ResourcesLoadingWidgetState createState() => _ResourcesLoadingWidgetState();
-// }
-//
-// class _ResourcesLoadingWidgetState extends State<ResourcesLoadingWidget> {
-//   @override
-//   Widget build(BuildContext context) {
-//     return LandingPageWidget();
-//   }
-//
-//   @override
-//   void initState() {
-//     super.initState();
-//     if(redirected == false){
-//       redirected = true;
-//       redirectWhenLoaded();
-//     }
-//   }
-//
-//   bool redirected = false;
-//
-//   void redirectWhenLoaded() async {
-//     final isLoggedIn = await widget.hasValidAuthToken;
-//     if(isLoggedIn){
-//       final destination = await widget.destinationPage;
-//       context.nav.push(destination);
-//     }else{
-//       context.nav.push(AuthPage);
-//     }
-//   }
-// }
+class ResourcesLoadingWidget extends StatefulWidget {
+  final Future<PageConfig> destinationPage;
+
+  const ResourcesLoadingWidget({Key? key, required this.destinationPage})
+      : super(key: key);
+
+  @override
+  _ResourcesLoadingWidgetState createState() => _ResourcesLoadingWidgetState();
+}
+
+class _ResourcesLoadingWidgetState extends State<ResourcesLoadingWidget> {
+  @override
+  Widget build(BuildContext context) {
+    return LandingPageWidget();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    if (redirected == false) {
+      redirected = true;
+      redirectWhenLoaded();
+    }
+  }
+
+  bool redirected = false;
+
+  void redirectWhenLoaded() async {
+    final isLoggedIn = true; //await widget.hasValidAuthToken;
+    if (isLoggedIn) {
+      final destination = await widget.destinationPage;
+      print("Destination page is : $destination");
+      context.nav.push(destination);
+    } else {
+      context.nav.push(authPage);
+    }
+  }
+}

@@ -80,5 +80,20 @@ class WalletRouteParser extends RouteInformationParser<PageConfig> {
   @override
   RouteInformation restoreRouteInformation(PageConfig configuration) {
     return RouteInformation(location: configuration.path);
+
+    // PlatformRouteInformationProvider(
+    //     initialRouteInformation: RouteInformation(
+    //     location: PlatformDispatcher.instance.defaultRouteName),
+    // ),
+    // switch (configuration.path) {
+    //   case PageConfig.Splash:
+    //     return const RouteInformation(location: SplashPath);
+    //   case PageConfig.Login:
+    //     return const RouteInformation(location: LoginPath);
+    //   case Pages.CreateAccount:
+    //     return const RouteInformation(location: CreateAccountPath);
+    //   default:
+    //     return const RouteInformation(location: SplashPath);
+    // }
   }
 }

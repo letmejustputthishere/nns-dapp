@@ -68,23 +68,31 @@ const queryProposals = async ({
   beforeProposal: ProposalId | undefined;
   identity: Identity | null | undefined;
 }): Promise<ProposalInfo[]> => {
+  var start = Date.now();
+  var now = start;
+  const times = {};
+
   if (!identity) {
     throw new Error(get(i18n).error.missing_identity);
   }
 
+  // TODO: Share one agent across the entire API.
   const governance: GovernanceCanister = GovernanceCanister.create({
     agent: await createAgent({ identity, host: process.env.HOST }),
   });
+  now = Date.now(); times["governance"] = now - start; start = now;
 
   const { rewards, status, topics }: ProposalsFiltersStore = get(
     proposalsFiltersStore
   );
+  now = Date.now(); times["filters"] = now - start; start = now;
 
   // TODO(L2-206): In Flutter, proposals are sorted on the client side -> this needs to be deferred on backend side if we still want this feature
   // sortedByDescending((element) => element.proposalTimestamp);
   // Governance canister listProposals -> https://github.com/dfinity/ic/blob/5c05a2fe2a7f8863c3772c050ece7e20907c8252/rs/sns/governance/src/governance.rs#L1226
 
   const { proposals }: ListProposalsResponse = await governance.listProposals({
+    certified: false,
     request: {
       limit: LIST_PAGINATION_LIMIT,
       beforeProposal,
@@ -96,6 +104,9 @@ const queryProposals = async ({
       includeStatus: status,
     },
   });
+  now = Date.now(); times["proposals"] = now - start; start = now;
+
+  console.info(JSON.stringify({queryProposals: times}));
 
   return proposals;
 };

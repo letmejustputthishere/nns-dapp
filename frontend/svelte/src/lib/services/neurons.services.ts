@@ -137,11 +137,17 @@ const setFolloweesHelper = async ({
       topic,
       followees,
     });
-    await loadNeuron({
+    const neuron: NeuronInfo | undefined = await getNeuron({
       neuronId,
       identity,
-      setNeuron: (neuron: NeuronInfo) => neuronsStore.pushNeurons([neuron]),
+      certified: true,
+      nocache: true,
     });
+
+    if (!neuron) {
+      throw new Error("Neuron not found");
+    }
+    neuronsStore.pushNeurons([neuron]);
   } catch (error) {
     toastsStore.show({
       labelKey: `error.${errorKey}`,
@@ -177,6 +183,7 @@ export const addFollowee = async ({
     topicFollowees === undefined
       ? [followee]
       : [...topicFollowees.followees, followee];
+
   await setFolloweesHelper({
     identity,
     neuronId,
@@ -237,16 +244,21 @@ const getNeuron = async ({
   neuronId,
   identity,
   certified,
+  nocache = false,
 }: {
   neuronId: NeuronId;
   identity: Identity | null | undefined;
   certified: boolean;
+  nocache?: boolean;
 }): Promise<NeuronInfo | undefined> => {
   // TODO: https://dfinity.atlassian.net/browse/L2-348
   if (!identity) {
     throw new Error(get(i18n).error.missing_identity);
   }
 
+  if (nocache) {
+    return queryNeuron({ neuronId, identity });
+  }
   const neuron = get(neuronsStore).find(
     (neuron) => neuron.neuronId === neuronId
   );

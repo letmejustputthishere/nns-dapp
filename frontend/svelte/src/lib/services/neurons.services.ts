@@ -16,7 +16,6 @@ import { neuronsStore } from "../stores/neurons.store";
 import { toastsStore } from "../stores/toasts.store";
 import { queryAndUpdate } from "../utils/api.utils";
 import { getLastPathDetailId } from "../utils/app-path.utils";
-import { errorToString } from "../utils/error.utils";
 
 /**
  * Uses governance api to create a neuron and adds it to the store
@@ -76,8 +75,6 @@ export const listNeurons = async ({
     request: ({ certified }) => queryNeurons({ identity, certified }),
     onLoad: ({ response: neurons }) => neuronsStore.setNeurons(neurons),
     onError: ({ error, certified }) => {
-      console.error(error);
-
       if (certified !== true) {
         return;
       }
@@ -85,10 +82,9 @@ export const listNeurons = async ({
       // Explicitly handle only UPDATE errors
       neuronsStore.setNeurons([]);
 
-      toastsStore.show({
+      toastsStore.error({
         labelKey: "error.get_neurons",
-        level: "error",
-        detail: errorToString(error),
+        err: error,
       });
     },
   });
@@ -222,10 +218,8 @@ export const removeFollowee = async ({
     );
   if (topicFollowees === undefined) {
     // Followee in that topic already does not exist.
-    toastsStore.show({
+    toastsStore.error({
       labelKey: "error.followee_does_not_exist",
-      level: "warn",
-      detail: `id: "${neuronId}"`,
     });
     return;
   }

@@ -257,7 +257,7 @@ const getNeuron = async ({
   }
 
   if (nocache) {
-    return queryNeuron({ neuronId, identity });
+    return queryNeuron({ neuronId, identity, certified });
   }
   const neuron = get(neuronsStore).find(
     (neuron) => neuron.neuronId === neuronId

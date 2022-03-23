@@ -137,7 +137,7 @@ const setFolloweesHelper = async ({
       neuronId,
       identity,
       certified: true,
-      noCache: true,
+      forceFetch: true,
     });
 
     if (!neuron) {
@@ -242,19 +242,19 @@ const getNeuron = async ({
   neuronId,
   identity,
   certified,
-  noCache = false,
+  forceFetch = false,
 }: {
   neuronId: NeuronId;
   identity: Identity | null | undefined;
   certified: boolean;
-  noCache?: boolean;
+  forceFetch?: boolean;
 }): Promise<NeuronInfo | undefined> => {
   // TODO: https://dfinity.atlassian.net/browse/L2-348
   if (!identity) {
     throw new Error(get(i18n).error.missing_identity);
   }
 
-  if (noCache) {
+  if (forceFetch) {
     return queryNeuron({ neuronId, identity, certified });
   }
   const neuron = get(neuronsStore).find(

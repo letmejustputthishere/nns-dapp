@@ -141,18 +141,17 @@ const setFolloweesHelper = async ({
       neuronId,
       identity,
       certified: true,
-      nocache: true,
+      noCache: true,
     });
 
     if (!neuron) {
       throw new Error("Neuron not found");
     }
     neuronsStore.pushNeurons([neuron]);
-  } catch (error) {
-    toastsStore.show({
+  } catch (err) {
+    toastsStore.error({
       labelKey: `error.${errorKey}`,
-      level: "error",
-      detail: `id: "${neuronId}"`,
+      err,
     });
   }
 };
@@ -244,19 +243,19 @@ const getNeuron = async ({
   neuronId,
   identity,
   certified,
-  nocache = false,
+  noCache = false,
 }: {
   neuronId: NeuronId;
   identity: Identity | null | undefined;
   certified: boolean;
-  nocache?: boolean;
+  noCache?: boolean;
 }): Promise<NeuronInfo | undefined> => {
   // TODO: https://dfinity.atlassian.net/browse/L2-348
   if (!identity) {
     throw new Error(get(i18n).error.missing_identity);
   }
 
-  if (nocache) {
+  if (noCache) {
     return queryNeuron({ neuronId, identity, certified });
   }
   const neuron = get(neuronsStore).find(

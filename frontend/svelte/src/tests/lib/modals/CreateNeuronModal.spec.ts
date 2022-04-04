@@ -190,6 +190,40 @@ describe("CreateNeuronModal", () => {
     );
   });
 
+  it("should close modal if it finds an invalid state", async () => {
+    jest
+      .spyOn(neuronsStore, "subscribe")
+      .mockImplementation(buildMockNeuronsStoreSubscribe([]));
+    const { container, component } = await renderModal();
+
+    const accountCard = container.querySelector('article[role="button"]');
+    expect(accountCard).not.toBeNull();
+
+    accountCard && (await fireEvent.click(accountCard));
+
+    const input = container.querySelector('input[name="amount"]');
+    // Svelte generates code for listening to the `input` event
+    // https://github.com/testing-library/svelte-testing-library/issues/29#issuecomment-498055823
+    input && (await fireEvent.input(input, { target: { value: 22 } }));
+
+    const createButton = container.querySelector('button[type="submit"]');
+
+    createButton && (await fireEvent.click(createButton));
+
+    // Confirm Delay is not rendered.
+    expect(
+      container.querySelector("[data-tid='go-confirm-delay-button']")
+    ).toBeNull();
+
+    // cannost use `done` callback with async
+    let closed = false;
+    component.$on("nnsClose", async () => {
+      closed = true;
+    });
+
+    await waitFor(() => closed);
+  });
+
   it("should have the update delay button disabled", async () => {
     jest
       .spyOn(neuronsStore, "subscribe")

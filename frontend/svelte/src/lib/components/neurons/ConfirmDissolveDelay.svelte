@@ -32,48 +32,44 @@
 </script>
 
 <div class="wizard-wrapper" data-tid="confirm-dissolve-delay-container">
-  {#if neuron !== undefined}
-    <div class="main-info">
-      <h3>{secondsToDuration(BigInt(delayInSeconds))}</h3>
-    </div>
-    <div>
-      <h5>{$i18n.neurons.neuron_id}</h5>
-      <p>{neuron.neuronId}</p>
-    </div>
-    <div>
-      <h5>{$i18n.neurons.neuron_balance}</h5>
-      <p>
-        {replacePlaceholders($i18n.neurons.icp_stake, {
-          $amount: formatICP(neuronICP),
-        })}
-      </p>
-    </div>
-    <div class="voting-power">
-      <h5>{$i18n.neurons.voting_power}</h5>
-      <p>
-        {votingPower({
-          stake: neuronICP,
-          dissolveDelayInSeconds: delayInSeconds,
-        }).toFixed(2)}
-      </p>
-    </div>
-    <div>
-      <button
-        class="primary full-width"
-        data-tid="confirm-delay-button"
-        disabled={loading}
-        on:click={updateNeuron}
-      >
-        {#if loading}
-          <Spinner />
-        {:else}
-          {$i18n.neurons.confirm_delay}
-        {/if}
-      </button>
-    </div>
-  {:else}
-    <Spinner />
-  {/if}
+  <div class="main-info">
+    <h3>{secondsToDuration(BigInt(delayInSeconds))}</h3>
+  </div>
+  <div>
+    <h5>{$i18n.neurons.neuron_id}</h5>
+    <p>{neuron.neuronId}</p>
+  </div>
+  <div>
+    <h5>{$i18n.neurons.neuron_balance}</h5>
+    <p>
+      {replacePlaceholders($i18n.neurons.icp_stake, {
+        $amount: formatICP(neuronICP),
+      })}
+    </p>
+  </div>
+  <div class="voting-power">
+    <h5>{$i18n.neurons.voting_power}</h5>
+    <p>
+      {votingPower({
+        stake: neuronICP,
+        dissolveDelayInSeconds: delayInSeconds,
+      }).toFixed(2)}
+    </p>
+  </div>
+  <div>
+    <button
+      class="primary full-width"
+      data-tid="confirm-delay-button"
+      disabled={loading}
+      on:click={updateNeuron}
+    >
+      {#if loading}
+        <Spinner />
+      {:else}
+        {$i18n.neurons.confirm_delay}
+      {/if}
+    </button>
+  </div>
 </div>
 
 <style lang="scss">

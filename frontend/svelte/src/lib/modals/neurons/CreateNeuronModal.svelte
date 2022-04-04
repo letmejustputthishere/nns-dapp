@@ -11,8 +11,10 @@
   import ConfirmDissolveDelay from "../../components/neurons/ConfirmDissolveDelay.svelte";
   import EditFollowNeurons from "../../components/neurons/EditFollowNeurons.svelte";
   import WizardModal from "../WizardModal.svelte";
-  import type { Steps } from "../../stores/steps.state";
   import { stepIndex } from "../../utils/step.utils";
+  import { createEventDispatcher } from "svelte";
+  import { toastsStore } from "../../stores/toasts.store";
+  import type { Steps } from "../../stores/steps.state";
 
   const steps: Steps = [
     { name: "SelectAccount", showBackButton: false },
@@ -29,7 +31,37 @@
 
   let newNeuronId: NeuronId | undefined;
   let newNeuron: NeuronInfo | undefined;
-  $: newNeuron = $neuronsStore.find(({ neuronId }) => newNeuronId === neuronId);
+  const dispatcher = createEventDispatcher();
+  type InvalidState = {
+    stepName: string;
+    neuron?: null;
+    account?: null;
+  };
+  const invalidStates: InvalidState[] = [
+    { stepName: "StakeNeuron", account: null },
+    { stepName: "SetDissolveDelay", neuron: null },
+    { stepName: "ConfirmDissolveDelay", neuron: null },
+    { stepName: "EditFollowNeurons", neuron: null },
+  ];
+  $: {
+    newNeuron = $neuronsStore.find(({ neuronId }) => newNeuronId === neuronId);
+    const invalidState = invalidStates.find(({ stepName, neuron, account }) => {
+      if (stepName === currentStepName) {
+        if (neuron === null) {
+          return newNeuron === undefined;
+        }
+        if (account === null) {
+          return selectedAccount === undefined;
+        }
+      }
+    });
+    if (invalidState !== undefined) {
+      toastsStore.error({
+        labelKey: "error.neuron_not_found",
+      });
+      dispatcher("nnsClose");
+    }
+  }
   let delayInSeconds: number = 0;
 
   const chooseAccount = ({
@@ -68,22 +100,16 @@
 <WizardModal {steps} bind:currentStepName bind:this={modal} on:nnsClose>
   <svelte:fragment slot="title">{$i18n.neurons?.[titleKey]}</svelte:fragment>
 
-  <!-- TODO: Manage edge case: https://dfinity.atlassian.net/browse/L2-329 -->
   {#if currentStepName === "SelectAccount"}
     <SelectAccount on:nnsSelectAccount={chooseAccount} />
   {/if}
-  <!-- TODO: Manage edge case: https://dfinity.atlassian.net/browse/L2-329 -->
-  {#if currentStepName === "StakeNeuron"}
-    <!-- we spare a spinner for the selectedAccount within StakeNeuron because we reach this step once the selectedAccount has been selected -->
-    {#if selectedAccount !== undefined}
-      <StakeNeuron
-        account={selectedAccount}
-        on:nnsNeuronCreated={goToDissolveDelay}
-      />
-    {/if}
+  {#if currentStepName === "StakeNeuron" && selectedAccount !== undefined}
+    <StakeNeuron
+      account={selectedAccount}
+      on:nnsNeuronCreated={goToDissolveDelay}
+    />
   {/if}
-  <!-- TODO: Manage edge case: https://dfinity.atlassian.net/browse/L2-329 -->
-  {#if currentStepName === "SetDissolveDelay"}
+  {#if currentStepName === "SetDissolveDelay" && newNeuron !== undefined}
     <SetDissolveDelay
       neuron={newNeuron}
       on:nnsSkipDelay={goEditFollowers}
@@ -91,8 +117,7 @@
       bind:delayInSeconds
     />
   {/if}
-  <!-- TODO: Manage edge case: https://dfinity.atlassian.net/browse/L2-329 -->
-  {#if currentStepName === "ConfirmDissolveDelay"}
+  {#if currentStepName === "ConfirmDissolveDelay" && newNeuron !== undefined}
     <ConfirmDissolveDelay
       neuron={newNeuron}
       {delayInSeconds}
@@ -100,8 +125,7 @@
       on:nnsNext={goNext}
     />
   {/if}
-  <!-- TODO: Manage edge case: https://dfinity.atlassian.net/browse/L2-329 -->
-  {#if currentStepName === "EditFollowNeurons"}
+  {#if currentStepName === "EditFollowNeurons" && newNeuron !== undefined}
     <EditFollowNeurons neuron={newNeuron} />
   {/if}
 </WizardModal>

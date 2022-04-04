@@ -10,33 +10,21 @@
   import { votingPower } from "../../utils/neuron.utils";
 
   export let delayInSeconds: number;
-  export let neuron: NeuronInfo | undefined;
+  export let neuron: NeuronInfo;
   let loading: boolean = false;
 
   const dispatcher = createEventDispatcher();
   let neuronICP: bigint;
-  $: neuronICP = neuron?.fullNeuron?.cachedNeuronStake ?? BigInt(0);
+  $: neuronICP = neuron.fullNeuron?.cachedNeuronStake ?? BigInt(0);
 
   const updateNeuron = async () => {
-    if (neuron === undefined) {
-      // TODO: Manage errors https://dfinity.atlassian.net/browse/L2-329
-      console.error("Neuron is not defined");
-      return;
-    }
-
     loading = true;
-    try {
-      await updateDelay({
-        neuronId: neuron.neuronId,
-        dissolveDelayInSeconds: delayInSeconds,
-      });
-      dispatcher("nnsNext");
-    } catch (error) {
-      // TODO: Manage errors https://dfinity.atlassian.net/browse/L2-329
-      console.error(error);
-    } finally {
-      loading = false;
-    }
+    await updateDelay({
+      neuronId: neuron.neuronId,
+      dissolveDelayInSeconds: delayInSeconds,
+    });
+    dispatcher("nnsNext");
+    loading = false;
   };
 </script>
 

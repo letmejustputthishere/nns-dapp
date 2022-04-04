@@ -8,6 +8,7 @@
   import { replacePlaceholders } from "../../utils/i18n.utils";
   import { formatICP } from "../../utils/icp.utils";
   import { votingPower } from "../../utils/neuron.utils";
+  import { startBusy, stopBusy } from "../../stores/busy.store";
 
   export let delayInSeconds: number;
   export let neuron: NeuronInfo;
@@ -18,11 +19,13 @@
   $: neuronICP = neuron.fullNeuron?.cachedNeuronStake ?? BigInt(0);
 
   const updateNeuron = async () => {
+    startBusy("update-delay");
     loading = true;
     await updateDelay({
       neuronId: neuron.neuronId,
       dissolveDelayInSeconds: delayInSeconds,
     });
+    stopBusy("update-delay");
     dispatcher("nnsNext");
     loading = false;
   };

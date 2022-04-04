@@ -46,18 +46,15 @@
   $: {
     newNeuron = $neuronsStore.find(({ neuronId }) => newNeuronId === neuronId);
     const invalidState = invalidStates.find(({ stepName, neuron, account }) => {
-      if (stepName === currentStepName) {
-        if (neuron === null) {
-          return newNeuron === undefined;
-        }
-        if (account === null) {
-          return selectedAccount === undefined;
-        }
-      }
+      return (
+        stepName === currentStepName &&
+        ((neuron === null && newNeuron === undefined) ||
+          (account === null && selectedAccount === undefined))
+      );
     });
     if (invalidState !== undefined) {
       toastsStore.error({
-        labelKey: "error.neuron_not_found",
+        labelKey: "error.unknown",
       });
       dispatcher("nnsClose");
     }

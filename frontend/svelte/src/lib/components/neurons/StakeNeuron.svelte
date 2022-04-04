@@ -12,6 +12,7 @@
   import { i18n } from "../../stores/i18n";
   import type { Account } from "../../types/account";
   import { formatICP } from "../../utils/icp.utils";
+  import { startBusy, stopBusy } from "../../stores/busy.store";
 
   export let account: Account;
   const transactionIcp: ICP = ICP.fromE8s(BigInt(TRANSACTION_FEE_E8S)) as ICP;
@@ -20,6 +21,7 @@
   const dispatcher = createEventDispatcher();
 
   const createNeuron = async () => {
+    startBusy("stake-neuron");
     creating = true;
     const neuronId = await stakeAndLoadNeuron({
       amount,
@@ -34,6 +36,7 @@
       dispatcher("nnsNeuronCreated", { neuronId });
     }
     creating = false;
+    stopBusy("stake-neuron");
   };
 
   const stakeMaximum = () => {

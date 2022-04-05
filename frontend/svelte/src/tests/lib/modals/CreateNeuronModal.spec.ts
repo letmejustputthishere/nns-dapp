@@ -16,6 +16,7 @@ import {
 import { accountsStore } from "../../../lib/stores/accounts.store";
 import { authStore } from "../../../lib/stores/auth.store";
 import { neuronsStore } from "../../../lib/stores/neurons.store";
+import { toastsStore } from "../../../lib/stores/toasts.store";
 import {
   mockAccountsStoreSubscribe,
   mockSubAccount,
@@ -41,6 +42,15 @@ jest.mock("../../../lib/services/neurons.services", () => {
 jest.mock("../../../lib/services/accounts.services", () => {
   return {
     syncAccounts: jest.fn().mockResolvedValue(undefined),
+  };
+});
+
+jest.mock("../../../lib/stores/toasts.store", () => {
+  return {
+    toastsStore: {
+      error: jest.fn(),
+      show: jest.fn(),
+    },
   };
 });
 
@@ -220,6 +230,8 @@ describe("CreateNeuronModal", () => {
     component.$on("nnsClose", async () => {
       closed = true;
     });
+
+    expect(toastsStore.error).toBeCalled();
 
     await waitFor(() => closed);
   });

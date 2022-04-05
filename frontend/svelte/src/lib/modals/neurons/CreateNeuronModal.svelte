@@ -97,8 +97,9 @@
   <!-- TODO: Manage edge case: https://dfinity.atlassian.net/browse/L2-329 -->
   {#if currentStep?.name === "SetDissolveDelay"}
     <SetDissolveDelay
+      secondaryButtonText={$i18n.neurons.skip}
       neuron={newNeuron}
-      on:nnsSkipDelay={goEditFollowers}
+      on:nnsCancel={goEditFollowers}
       on:nnsConfirmDelay={goNext}
       bind:delayInSeconds
     />
@@ -109,7 +110,7 @@
       neuron={newNeuron}
       {delayInSeconds}
       on:back={goBack}
-      on:nnsNext={goNext}
+      on:nnsUpdated={goNext}
     />
   {/if}
   <!-- TODO: Manage edge case: https://dfinity.atlassian.net/browse/L2-329 -->

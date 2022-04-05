@@ -8,6 +8,7 @@
   import { replacePlaceholders } from "../../utils/i18n.utils";
   import { formatICP } from "../../utils/icp.utils";
   import { votingPower } from "../../utils/neuron.utils";
+  import { toastsStore } from "../../stores/toasts.store";
 
   export let delayInSeconds: number;
   export let neuron: NeuronInfo | undefined;
@@ -30,7 +31,11 @@
         neuronId: neuron.neuronId,
         dissolveDelayInSeconds: delayInSeconds,
       });
-      dispatcher("nnsNext");
+      toastsStore.show({
+        labelKey: "neurons.dissolve_delay_success",
+        level: "info",
+      });
+      dispatcher("nnsUpdated");
     } catch (error) {
       // TODO: Manage errors https://dfinity.atlassian.net/browse/L2-329
       console.error(error);
